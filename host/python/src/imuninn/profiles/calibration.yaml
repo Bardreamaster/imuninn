@@ -1,0 +1,20 @@
+# 标定：锁定对焦和曝光，保证内参稳定、亮度不跳变；带深度
+name: calibration
+mode: ar
+streams:
+  imu:
+    enabled: true
+    rate_hz: 200
+    raw: true
+  ar_pose:
+    enabled: true
+  rgb:
+    enabled: true
+    bitrate_kbps: 8000
+    keyframe_interval: 30
+    exposure_mode: locked
+    white_balance_mode: locked
+    focus_mode: locked
+  depth:
+    enabled: true
+    compression: lz4
