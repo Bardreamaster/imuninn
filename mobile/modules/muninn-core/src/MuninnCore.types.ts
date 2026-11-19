@@ -48,6 +48,7 @@ export interface StatusEvent {
   imuHz: number;
   videoHz: number;
   depthHz: number;
+  audioHz: number;
   videoKbps: number;
   encoderDropped: number;
   /** Current video format in sensor orientation (width > height). 0 when unknown. */
@@ -124,4 +125,6 @@ export interface ConfigResult {
 export type MuninnCoreEvents = {
   onStatus: (e: StatusEvent) => void;
   onConfig: (e: { config: DeviceConfig }) => void;
+  /** Throttled (~2 Hz) signal that the user touched the screen anywhere (incl. modals) or edited text. */
+  onUserActivity: () => void;
 };
