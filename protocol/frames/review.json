@@ -1,0 +1,9 @@
+{
+ "about": "Who checked each model's dimensions in iphone-frames.json. Hand-edited; run tools/gen-frames.py (no arguments) after changing it.",
+ "statuses": {
+  "auto": "values were read off Apple's dimensional drawing automatically and nobody has checked them yet",
+  "human": "a person compared every value with the drawing and confirmed it"
+ },
+ "default": "auto",
+ "models": {}
+}

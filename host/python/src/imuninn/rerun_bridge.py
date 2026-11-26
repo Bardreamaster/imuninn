@@ -4,23 +4,26 @@
     imuninn rerun --mcap run1.mcap       # replay a recording
     imuninn rerun --save run1.rrd phone  # write a .rrd instead of opening the viewer
 
-Entity layout, one subtree per device (`<dev>` = sanitised device name):
+Entity layout, one subtree per device (`<dev>` = sanitised device name), in the unified frames
+(imuninn.frames; `--frames raw` keeps the ARKit layout used before 0.3: y-up world, the entity
+`world/<dev>` = the ARKit camera, pinholes in ARKit camera axes):
 
-    world                        ViewCoordinates RIGHT_HAND_Y_UP (the ARKit / ARCore world frame)
-    world/<dev>                  Transform3D: camera pose (ARKit camera frame: X right, Y up, Z back)
-    world/<dev>/trajectory       LineStrips3D: decimated path of the camera
-    world/<dev>/cam              Pinhole with the RGB intrinsics (sensor orientation)
+    world                        ViewCoordinates RIGHT_HAND_Z_UP: z up, x = heading at session start
+    world/<dev>                  Transform3D: world_tf_device (device = Core Motion axes, origin on the screen)
+    world/<dev>/trajectory       LineStrips3D: decimated path of the device origin
+    world/<dev>/cam              Transform3D device_tf_cam_<lens>_optical + Pinhole (OpenCV axes, RDF) with the
+                                 RGB intrinsics (native sensor orientation)
     world/<dev>/cam/video        Image decoded by this client with PyAV (default, `--video decode`), or
                                  VideoStream: H.264 NAL units as sent, decoded by the viewer itself
                                  (`--video stream`; the native viewer runs an external ffmpeg for that
                                  and restarted it about once a second at 1920x1440@60 -> stutter)
-    world/<dev>/depth            Pinhole with the depth intrinsics
+    world/<dev>/depth            Transform3D device_tf_cam_main_optical + Pinhole with the depth intrinsics
     world/<dev>/depth/image      DepthImage in metres (the viewer back-projects it in the 3D view)
     world/<dev>/depth/confidence Image: ARKit confidence 0..2
-    world/<dev>/points           Points3D: depth back-projected on the PC, coloured from the RGB
+    world/<dev>/depth_points     Transform3D (as depth) + Points3D: depth back-projected on the PC, coloured from the RGB
                                  frame (`--points`, needs `--video decode`; otherwise depth-coloured);
                                  points and the confidence image are capped at `--points-hz` (10 Hz)
-    plots/<dev>/imu/{accel,gyro,mag}, plots/<dev>/pose/tracking, plots/<dev>/health/{thermal,battery,rates,video_kbps}
+    plots/<dev>/imu/{accel,gyro,mag} (accel with the REP 145 sign: flat screen-up z = +9.81), plots/<dev>/pose/tracking, plots/<dev>/health/{thermal,battery,rates,video_kbps}
     plots/<dev>/audio/level      Scalars: RMS level of each audio chunk in dBFS (Rerun cannot play sound;
                                  `imuninn export-audio` writes a WAV aligned to the device clock)
     events/<dev>                 TextLog: tracking / thermal / low-power changes, gaps, config changes
@@ -45,6 +48,7 @@ from typing import Iterable
 
 import numpy as np
 
+from .frames import FrameConverter, check_mode
 from .proto import imuninn_pb2 as pb
 from .session import Device
 
@@ -53,7 +57,8 @@ log = logging.getLogger("imuninn.rerun")
 VIDEO_MODES = ("stream", "decode", "off")
 
 
-def _init(app_id: str, spawn: bool, save: str | None = None, port: int | None = None):
+def _init(app_id: str, spawn: bool, save: str | None = None, port: int | None = None, frames: str = "unified",
+          recording_id: str | None = None):
     import os
     import sys
 
@@ -64,7 +69,9 @@ def _init(app_id: str, spawn: bool, save: str | None = None, port: int | None = 
     bindir = os.path.join(sys.prefix, "bin")
     if bindir not in os.environ.get("PATH", "").split(os.pathsep):
         os.environ["PATH"] = bindir + os.pathsep + os.environ.get("PATH", "")
-    rr.init(app_id, spawn=spawn and not save and port is None)
+    rr.init(app_id, recording_id=recording_id, spawn=spawn and not save and port is None)
+    if recording_id and hasattr(rr, "send_recording_name"):
+        rr.send_recording_name(recording_id)  # shown in the viewer's recording list
     if save:
         rr.save(save)  # .rrd file instead of the viewer
     elif port is not None:
@@ -73,7 +80,8 @@ def _init(app_id: str, spawn: bool, save: str | None = None, port: int | None = 
         if spawn:
             rr.spawn(port=port, connect=False)
         rr.connect_grpc(f"rerun+http://127.0.0.1:{port}/proxy")
-    rr.log("world", rr.ViewCoordinates.RIGHT_HAND_Y_UP, static=True)
+    rr.log("world", rr.ViewCoordinates.RIGHT_HAND_Z_UP if frames == "unified" else rr.ViewCoordinates.RIGHT_HAND_Y_UP,
+           static=True)
     return rr
 
 
@@ -119,9 +127,16 @@ class RerunSink:
         device_timeline: str = "device",
         pc_offset_ns: int | None = None,
         recording=None,
+        frames: str = "unified",
+        converter: FrameConverter | None = None,
     ):
         if video not in VIDEO_MODES:
             raise ValueError(f"video must be one of {VIDEO_MODES}")
+        self.frames = check_mode(frames)
+        self.unified = frames == "unified"
+        self.conv = converter if converter is not None else (FrameConverter() if self.unified else None)
+        self._cam_tf: tuple | None = None     # last logged world/<dev>/cam transform (camera, rotation, mirrored)
+        self._depth_tf: tuple | None = None
         self.rr = rr
         self.recording = recording  # None = the global recording
         self.name = name
@@ -244,22 +259,41 @@ class RerunSink:
                 focal_length=[k.fx * f, k.fy * f],
                 principal_point=[k.cx * f, k.cy * f],
                 resolution=[k.width // step, k.height // step],
-                camera_xyz=self.rr.ViewCoordinates.RUB,  # ARKit camera frame
+                # unified: the entity is the optical frame (OpenCV, x right / y down / z forward);
+                # raw: the ARKit camera frame (x right, y up, z back)
+                camera_xyz=self.rr.ViewCoordinates.RDF if self.unified else self.rr.ViewCoordinates.RUB,
                 image_plane_distance=plane,
             ),
         )
         return kt
+
+    def _optical_tf(self, paths: list[str], key: tuple, cached: tuple | None, camera: str, rotation_deg, mirrored: bool) -> tuple:
+        """unified: log device_tf_cam_optical on camera entities when the camera / orientation changes."""
+        if not self.unified or key == cached:
+            return cached
+        t = self.conv.device_tf_camera(camera, rotation_deg or None, mirrored)
+        for path in paths:
+            self._log(path, self.rr.Transform3D(translation=t[:3, 3], mat3x3=t[:3, :3]))
+        return key
 
     # -- streams --------------------------------------------------------------
 
     def _pose(self, s: pb.PoseSample) -> None:
         rr = self.rr
         self.counts["ar_pose"] += 1
-        p, q = s.position, s.orientation
-        self._log(
-            self.world,
-            rr.Transform3D(translation=[p.x, p.y, p.z], rotation=rr.Quaternion(xyzw=[q.x, q.y, q.z, q.w])),
-        )
+        if self.unified:
+            u = self.conv.pose(s)
+            pos = u.world_pos_device
+            self._log(self.world, rr.Transform3D(translation=pos, rotation=rr.Quaternion(xyzw=u.world_quat_device)))
+            if self._cam_tf is None:   # no video yet: put the cam entity on the AR tracking camera
+                self._cam_tf = self._optical_tf([f"{self.world}/cam"], (u.camera, 90, False), self._cam_tf, u.camera, 90, False)
+        else:
+            p, q = s.position, s.orientation
+            pos = [p.x, p.y, p.z]
+            self._log(
+                self.world,
+                rr.Transform3D(translation=pos, rotation=rr.Quaternion(xyzw=[q.x, q.y, q.z, q.w])),
+            )
         self._cam_k = self._pinhole(f"{self.world}/cam", s.intrinsics, self._cam_k, 0.2, self.video_step)
         self._scalars("pose/tracking", float(s.tracking), ["tracking (1 n/a, 2 limited, 3 normal)"])
         if s.tracking != self._tracking:
@@ -267,17 +301,17 @@ class RerunSink:
             self._event(f"tracking {name}", "INFO" if s.tracking == pb.TRACKING_STATE_NORMAL else "WARN")
             self._tracking = s.tracking
         if self.trajectory:
-            self._trajectory(p, self._last_t)
+            self._trajectory([float(v) for v in pos], self._last_t)
 
-    def _trajectory(self, p, t: float) -> None:
+    def _trajectory(self, p: list[float], t: float) -> None:
         """Decimated path: a point every 50 ms or 1 cm, re-logged at most twice a second."""
         if self._traj:
             last = self._traj[-1]
             dt = t - self._traj_last_t
-            moved = (p.x - last[0]) ** 2 + (p.y - last[1]) ** 2 + (p.z - last[2]) ** 2 >= 1e-4
+            moved = (p[0] - last[0]) ** 2 + (p[1] - last[1]) ** 2 + (p[2] - last[2]) ** 2 >= 1e-4
             if dt < 1.0 and (not moved or dt < 0.05):
                 return
-        self._traj.append([p.x, p.y, p.z])
+        self._traj.append(list(p))
         self._traj_last_t = t
         self._traj_dirty = True
         if len(self._traj) > 20000:  # keep memory bounded: thin the oldest half
@@ -292,15 +326,24 @@ class RerunSink:
 
     def _imu(self, s: pb.ImuSample) -> None:
         self.counts["imu"] += 1
-        a, g, m = s.accel, s.gyro, s.mag
-        self._scalars("imu/accel", [a.x, a.y, a.z], ["ax (m/s²)", "ay", "az"])
-        self._scalars("imu/gyro", [g.x, g.y, g.z], ["gx (rad/s)", "gy", "gz"])
+        m = s.mag
+        if self.unified:
+            u = self.conv.imu(s)
+            self._scalars("imu/accel", u.accel.tolist(), ["ax (m/s², REP 145)", "ay", "az"])
+            self._scalars("imu/gyro", u.gyro.tolist(), ["gx (rad/s)", "gy", "gz"])
+        else:
+            a, g = s.accel, s.gyro
+            self._scalars("imu/accel", [a.x, a.y, a.z], ["ax (m/s², as sent)", "ay", "az"])
+            self._scalars("imu/gyro", [g.x, g.y, g.z], ["gx (rad/s)", "gy", "gz"])
         if m.x or m.y or m.z:
             self._scalars("imu/mag", [m.x, m.y, m.z], ["mx (µT)", "my", "mz"])
 
     def _video(self, s: pb.VideoFrame) -> None:
         rr = self.rr
         self.counts["rgb"] += 1
+        if self.unified:
+            cam, mir = self.conv.frame_camera(s), bool(getattr(s, "mirrored", False))
+            self._cam_tf = self._optical_tf([f"{self.world}/cam"], (cam, s.rotation_deg, mir), self._cam_tf, cam, s.rotation_deg, mir)
         self._cam_k = self._pinhole(f"{self.world}/cam", s.intrinsics, self._cam_k, 0.2, self.video_step)
         if self.video == "off":
             return
@@ -339,6 +382,9 @@ class RerunSink:
         rr = self.rr
         self.counts["depth"] += 1
         d_mm, conf = decode_depth(s, upright=False)
+        if self.unified:
+            cam = self.conv.frame_camera(s)
+            self._depth_tf = self._optical_tf([f"{self.world}/depth", f"{self.world}/depth_points"], (cam, s.rotation_deg), self._depth_tf, cam, s.rotation_deg, False)
         self._depth_k = self._pinhole(f"{self.world}/depth", s.intrinsics, self._depth_k, 0.2)
         # uint16 millimetres as sent (half the size of float32 metres); meter=1000 keeps the viewer in metres
         self._log(f"{self.world}/depth/image", rr.DepthImage(d_mm, meter=1000.0, colormap="turbo"))
@@ -350,7 +396,8 @@ class RerunSink:
                 self._point_cloud(d_mm, conf, s.intrinsics)
 
     def _point_cloud(self, d_mm: np.ndarray, conf: np.ndarray | None, k: pb.Intrinsics) -> None:
-        """Back-project depth into the ARKit camera frame (X right, Y up, Z back) on the PC."""
+        """Back-project depth on the PC: into the optical frame (x right, y down, z forward) in
+        unified mode, the ARKit camera frame (x right, y up, z back) in raw mode."""
         if not k.width or not k.fx:
             return
         st = self.point_stride
@@ -366,9 +413,9 @@ class RerunSink:
         if d.size == 0:
             return
         x = (us - k.cx) / k.fx * d
-        y = -(vs - k.cy) / k.fy * d
-        z = -d
-        pts = np.stack([x, y, z], axis=1)
+        y = (vs - k.cy) / k.fy * d
+        z = d
+        pts = np.stack([x, y, z], axis=1) if self.unified else np.stack([x, -y, -z], axis=1)
         colors = None
         if self._last_rgb is not None and self._last_rgb_k is not None:
             rw, rh, rfx, rfy, rcx, rcy = self._last_rgb_k
@@ -382,7 +429,10 @@ class RerunSink:
             # depth-coloured (turbo-ish ramp 0..5 m)
             t = np.clip(d / 5.0, 0, 1)
             colors = np.stack([255 * t, 255 * (1 - np.abs(2 * t - 1)), 255 * (1 - t)], axis=1).astype(np.uint8)
-        self._log(f"{self.world}/points", self.rr.Points3D(pts, colors=colors, radii=0.004))
+        # unified: depth_points carries the depth camera's optical transform (not under the Pinhole entity,
+        # which would make its children 2D); raw: in the ARKit camera frame = world/<dev>, as before
+        self._log(f"{self.world}/depth_points" if self.unified else f"{self.world}/points",
+                  self.rr.Points3D(pts, colors=colors, radii=0.004))
 
     def _audio(self, s: pb.AudioChunk) -> None:
         from .audio import level_dbfs
@@ -457,7 +507,8 @@ def blueprint(rr, names: list[str]):
 
 
 def _sink_kwargs(kw: dict) -> dict:
-    return {k: kw[k] for k in ("video", "every_nth_video", "video_scale", "points", "point_stride", "points_hz", "trajectory") if k in kw}
+    return {k: kw[k] for k in ("video", "every_nth_video", "video_scale", "points", "point_stride", "points_hz", "trajectory", "frames")
+            if k in kw}
 
 
 def run(dev: Device, app_id: str = "imuninn", spawn: bool = True, save: str | None = None,
@@ -478,12 +529,13 @@ def run_devices(devs: list[Device], app_id: str = "imuninn", spawn: bool = True,
 
     from .client import pc_time_ns
 
-    rr = _init(app_id, spawn, save, port)
+    unified = sink_kw.get("frames", "unified") == "unified"
+    rr = _init(app_id, spawn, save, port, sink_kw.get("frames", "unified"))
     names = _unique([device_entity_name(d.info.device_name if d.info else None, f"phone{i}") for i, d in enumerate(devs)])
     multi = len(devs) > 1
     sinks = [
         RerunSink(rr, n, device_timeline=f"device:{n}" if multi else "device",
-                  pc_offset_ns=d.clock_offset_ns, **_sink_kwargs(sink_kw))
+                  pc_offset_ns=d.clock_offset_ns, converter=d.frames if unified else None, **_sink_kwargs(sink_kw))
         for n, d in zip(names, devs)
     ]
     if use_blueprint:
@@ -493,7 +545,7 @@ def run_devices(devs: list[Device], app_id: str = "imuninn", spawn: bool = True,
 
     q: queue.Queue = queue.Queue(maxsize=4096)
     for i, d in enumerate(devs):
-        d.on("*", lambda stream, sample, i=i: _put(q, (i, stream, sample)))
+        d.on("*", lambda stream, sample, i=i: _put(q, (i, stream, sample)), frames="raw")   # the sink converts
         d.on("__event__", lambda e, i=i: _put(q, (i, "__event__", e)))
 
     t0 = time.time()
@@ -543,14 +595,18 @@ def _put(q: queue.Queue, item) -> None:
 
 
 def run_mcap(path: str, app_id: str = "imuninn-replay", spawn: bool = True, save: str | None = None,
-             use_blueprint: bool = True, port: int | None = None, **sink_kw) -> dict:
-    """Replay an MCAP recording into the viewer (`pc` timeline = the file's log_time)."""
-    from .mcap_io import read_device_info, replay_timed
+             use_blueprint: bool = True, port: int | None = None, model: str | None = None,
+             recording_id: str | None = None, **sink_kw) -> dict:
+    """Replay an MCAP recording into the viewer (`pc` timeline = the file's log_time).
+    `model` gives the phone model for camera offsets when the file has no ``/device`` topic.
+    `recording_id` names the recording (a Rerun dataset uses it as the segment id); default: random."""
+    from .mcap_io import frame_converter, read_device_info, replay_timed
 
-    rr = _init(app_id, spawn, save, port)
+    rr = _init(app_id, spawn, save, port, sink_kw.get("frames", "unified"), recording_id=recording_id)
     info = read_device_info(path)
     name = device_entity_name(info.device_name if info else None, "replay")
-    sink = RerunSink(rr, name, **_sink_kwargs(sink_kw))
+    conv = frame_converter(path, model) if sink_kw.get("frames", "unified") == "unified" else None
+    sink = RerunSink(rr, name, converter=conv, **_sink_kwargs(sink_kw))
     if use_blueprint:
         rr.send_blueprint(blueprint(rr, [name]))
     try:
@@ -561,9 +617,11 @@ def run_mcap(path: str, app_id: str = "imuninn-replay", spawn: bool = True, save
     return {name: sink.counts}
 
 
-def log_samples(rr, samples: Iterable[tuple[str, object]], name: str = "phone", **sink_kw) -> RerunSink:
-    """Library helper: push an iterable of (stream, sample) through a RerunSink."""
-    sink = RerunSink(rr, name, **_sink_kwargs(sink_kw))
+def log_samples(rr, samples: Iterable[tuple[str, object]], name: str = "phone",
+                converter: FrameConverter | None = None, **sink_kw) -> RerunSink:
+    """Library helper: push an iterable of raw (stream, sample) messages through a RerunSink
+    (`converter`: the device's :class:`~imuninn.frames.FrameConverter` for camera offsets)."""
+    sink = RerunSink(rr, name, converter=converter, **_sink_kwargs(sink_kw))
     for stream, sample in samples:
         sink.log(stream, sample)
     sink.flush()

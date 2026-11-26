@@ -10,7 +10,7 @@ iMuninn PC-side client API. The phone is the server; PCs connect to it.
 
 Re-exported for convenience: `discover`, `connect`, `Device`, `Phone`, `LeaseError` (documented in their modules below).
 
-- `PROTOCOL_VERSION` = `6`
+- `PROTOCOL_VERSION` = `7`
 - `SERVICE_TYPE` = `'_imuninn._tcp.local.'`
 - `DEFAULT_CONTROL_PORT` = `7420`
 
@@ -35,13 +35,14 @@ one with `connect` and use it as a context manager:
         for pose in dev.iter("ar_pose"):
             ...
 
-Data arrives through `on` callbacks or `iter` queues. Config
-changes go through `set`, `set_config` or `apply_profile`
-and are validated by the phone; the result says what was applied, clamped
-or rejected.
+Data arrives through `on` callbacks or `iter` queues. Pose and IMU
+samples are converted to the unified frames (`Pose`,
+`Imu`) unless ``frames="raw"``. Config changes go through
+`set`, `set_config` or `apply_profile` and are validated by
+the phone; the result says what was applied, clamped or rejected.
 
 ```python
-def __init__(host: str, port: int, name: str | None = None, data_transport: str = 'tcp')
+def __init__(host: str, port: int, name: str | None = None, data_transport: str = 'tcp', frames: str = 'unified', model: str | None = None)
 ```
 
 Create an unconnected device; call `open` (or use ``with``).
@@ -52,6 +53,11 @@ Args:
     name: Client name shown on the phone; defaults to this machine's hostname.
     data_transport: ``"tcp"`` (video / depth on TCP, pose / IMU / health on UDP)
         or ``"websocket"`` (everything on one WebSocket; the browser path).
+    frames: ``"unified"`` (default): ``ar_pose`` / ``imu`` samples arrive as
+        `Pose` / `Imu` in the unified
+        frames. ``"raw"``: the protobuf messages as sent (Apple native frames).
+    model: Override the phone's reported model for the camera / AR offsets
+        (identifier like ``"iPhone18,1"`` or name like ``"iPhone 17 Pro"``).
 
 #### `Device.open`
 
@@ -74,6 +80,14 @@ Disconnect and stop the background thread. Safe to call twice.
 #### `Device.info` (property -> pb.DeviceInfo | None)
 
 Device identity from the Welcome message (model, OS, LiDAR, protocol version).
+
+#### `Device.frames` (property -> FrameConverter)
+
+Frame converter for this phone (model, platform and AR camera from ``info``).
+
+Also gives camera extrinsics: ``dev.frames.device_tf_frame(video_frame)`` is the
+optical frame of that image in ``device``. Assign a `FrameConverter`
+to override it.
 
 #### `Device.capabilities` (property -> pb.Capabilities | None)
 
@@ -233,16 +247,17 @@ Device timestamp -> PC wall-clock seconds.
 #### `Device.on`
 
 ```python
-def on(stream: str, cb: Callable) -> None
+def on(stream: str, cb: Callable, frames: str | None = None) -> None
 ```
 
 Callback for a stream id ("imu", "ar_pose", "rgb"), "*" for all
 (cb(stream, sample)), or "__event__" for connected/config/disconnected.
+``frames`` overrides the device's ``frames`` mode for this callback.
 
 #### `Device.iter`
 
 ```python
-def iter(stream: str | None = None, maxsize: int = 1024, timeout: float | None = None) -> Iterator
+def iter(stream: str | None = None, maxsize: int = 1024, timeout: float | None = None, frames: str | None = None) -> Iterator
 ```
 
 Iterate over incoming samples.
@@ -254,17 +269,23 @@ Args:
     maxsize: Queue depth; when the consumer falls behind, newer samples are
         dropped rather than blocking the client.
     timeout: Stop iterating after this many seconds without a sample.
+    frames: ``"unified"`` or ``"raw"``; defaults to the device's mode. Only pose and
+        IMU samples differ (`Pose` / `Imu`
+        vs. the protobuf messages).
 
 ### `connect`
 
 ```python
-def connect(target: str = '', name: str | None = None, timeout: float = 10.0, data_transport: str = 'tcp') -> Device
+def connect(target: str = '', name: str | None = None, timeout: float = 10.0, data_transport: str = 'tcp', frames: str = 'unified', model: str | None = None) -> Device
 ```
 
 Connect to a phone by Bonjour name, host, host:port, or '' for the first one found.
 
 `data_transport="websocket"` takes every stream over one WebSocket (protocol v5, the
 browser path): one port, no UDP, slightly more latency for pose / IMU under congestion.
+`frames="unified"` (default) converts pose / IMU samples to the unified frames
+(`frames`); `frames="raw"` keeps the messages as sent. `model` overrides
+the phone's reported model for camera offsets.
 Returns an opened Device; use as a context manager or call close().
 
 
@@ -698,18 +719,27 @@ Finish the MCAP index and close the file.
 ### `replay`
 
 ```python
-def replay(path: str | Path, realtime: bool = False, topics: list[str] | None = None) -> Iterator[tuple[str, object]]
+def replay(path: str | Path, realtime: bool = False, topics: list[str] | None = None, frames: str = 'unified', model: str | None = None) -> Iterator[tuple[str, object]]
 ```
 
 Yield (stream_id, sample) from an MCAP file. `realtime=True` sleeps to reproduce timing.
 
+`frames="unified"` (default): pose and IMU samples come as `Pose` /
+`Imu`, using the model from the file's ``/device`` topic (live
+recordings) or `model` (needed for files converted from phone recordings, which have no
+``/device``; without it the camera offsets are 0 and a warning is logged).
+`frames="raw"`: every message as stored.
+
 ### `convert`
 
 ```python
-def convert(src: str | Path, dst: str | Path) -> int
+def convert(src: str | Path, dst: str | Path, device: pb.DeviceInfo | None = None) -> int
 ```
 
 Phone recording -> MCAP. log_time = device time (no PC clock available).
+
+Phone recordings carry no DeviceInfo; pass `device` (e.g. ``DeviceInfo(model="iPhone18,1")``)
+to store one on ``/device`` so replays know the model for camera offsets.
 
 ### `summary`
 
@@ -718,6 +748,435 @@ def summary(path: str | Path) -> dict[str, int]
 ```
 
 Message count per topic, from the file's summary section.
+
+### `read_frame_convention`
+
+```python
+def read_frame_convention(path: str | Path) -> int
+```
+
+``frame_convention`` recorded in the file, 0 when absent (recorded before 0.3).
+
+### `frame_converter`
+
+```python
+def frame_converter(path: str | Path, model: str | None = None)
+```
+
+`FrameConverter` for a recording (its ``/device`` info, or `model`).
+
+
+## `imuninn.frames`
+
+Unified coordinate frames (``frame_convention`` 1).
+
+### `FrameConverter`
+
+```python
+class FrameConverter
+```
+
+Converts one device's samples into the unified frames.
+
+Built from the phone's ``DeviceInfo`` (model for camera offsets, platform for the IMU sign,
+AR capture camera); ``model`` overrides the reported one, e.g. for a recording that has no
+``/device`` topic. `frames` holds the one for a live connection.
+
+#### `FrameConverter.from_device_info`
+
+```python
+def from_device_info(info: pb.DeviceInfo | None, model: str | None = None) -> 'FrameConverter'
+```
+
+Converter for the device described by ``info`` (``None``: unknown iOS device).
+
+#### `FrameConverter.model_name` (property -> str | None)
+
+Dataset name of the model (``"iPhone 17 Pro"``), or ``None`` when unknown.
+
+#### `FrameConverter.pose`
+
+```python
+def pose(sample: pb.PoseSample) -> Pose
+```
+
+ARKit ``PoseSample`` -> `Pose` in ``world`` (z up).
+
+#### `FrameConverter.imu`
+
+```python
+def imu(sample: pb.ImuSample) -> Imu
+```
+
+``ImuSample`` -> `Imu` (REP 145 accel sign, m/s², rad/s).
+
+#### `FrameConverter.convert`
+
+```python
+def convert(sample: Any) -> Any
+```
+
+`Pose` / `Imu` for pose and IMU samples; anything else is returned as is.
+
+#### `FrameConverter.device_tf_camera`
+
+```python
+def device_tf_camera(camera: str = 'main', rotation_deg: int | None = None, mirrored: bool = False) -> np.ndarray
+```
+
+``device_tf_cam_<camera>_optical`` for this model (see `device_tf_camera`).
+
+#### `FrameConverter.frame_camera`
+
+```python
+def frame_camera(frame: pb.VideoFrame | pb.DepthFrame) -> str
+```
+
+Camera a video / depth frame came from: the frame's ``camera`` field when the phone sends
+it (protocol v7), else the main camera (depth is registered to it).
+
+#### `FrameConverter.device_tf_frame`
+
+```python
+def device_tf_frame(frame: pb.VideoFrame | pb.DepthFrame) -> np.ndarray
+```
+
+Optical frame of a video / depth frame's native image in ``device``, from its camera,
+``rotation_deg`` and ``mirrored`` fields.
+
+### `Pose`
+
+```python
+class Pose
+```
+
+An ``ar_pose`` sample in the unified frames. ``raw`` is the PoseSample as received.
+
+#### `Pose.device_time_ns` (property -> int)
+
+#### `Pose.world_pos_device` (property -> np.ndarray)
+
+Device position in ``world``, metres.
+
+#### `Pose.world_rot_device` (property -> np.ndarray)
+
+#### `Pose.world_quat_device` (property -> np.ndarray)
+
+Device orientation in ``world`` as ``(x, y, z, w)``.
+
+#### `Pose.raw_arkit_transform` (property -> np.ndarray)
+
+``ARCamera.transform`` as sent (y-up AR world, ARKit camera axes).
+
+#### `Pose.raw_position` (property -> np.ndarray)
+
+#### `Pose.raw_orientation` (property -> np.ndarray)
+
+Raw ARKit quaternion ``(x, y, z, w)``.
+
+### `Imu`
+
+```python
+class Imu
+```
+
+An ``imu`` sample in the ``imu`` frame. ``raw`` is the ImuSample as received.
+
+#### `Imu.device_time_ns` (property -> int)
+
+#### `Imu.raw_accel` (property -> np.ndarray)
+
+Accelerometer as sent (iOS: Core Motion sign, flat screen-up z = -9.81).
+
+#### `Imu.raw_gyro` (property -> np.ndarray)
+
+### `device_tf_camera`
+
+```python
+def device_tf_camera(model: str | None, camera: str = 'main', rotation_deg: int | None = None, mirrored: bool = False, warn: bool = True) -> np.ndarray
+```
+
+``device_tf_cam_<camera>_optical``: the camera's optical frame in ``device``.
+
+The orientation follows ``rotation_deg`` / ``mirrored`` (see `device_rot_optical`); the
+position comes from the iphone-frames dataset for ``model`` (hardware identifier such as
+``"iPhone18,1"`` or a name such as ``"iPhone 17 Pro"``). Unknown model or camera: position 0
+and a warning (``warn=False`` to silence it).
+
+### `device_rot_optical`
+
+```python
+def device_rot_optical(camera: str = 'main', rotation_deg: int | None = None, mirrored: bool = False) -> np.ndarray
+```
+
+Optical axes of a camera's native image, expressed in ``device`` (``device_rot_cam_optical``).
+
+Args:
+    camera: ``"main"``, ``"ultra_wide"``, ``"telephoto"`` (back) or ``"front"``; or the
+        facings ``"back"`` / ``"front"``.
+    rotation_deg: Clockwise rotation that makes the native image upright in portrait
+        (``VideoFrame.rotation_deg``). Defaults to 90 for both facings (iPhone 17 Pro).
+    mirrored: The buffer is horizontally mirrored (``VideoFrame.mirrored``). The result then
+        includes that reflection (det = -1): it still maps rays back-projected from the
+        mirrored image with its own intrinsics into ``device``, but it is not a rotation and
+        has no quaternion. Prefer un-mirroring the image (``u -> W - 1 - u``, ``cx -> W - cx``).
+
+### `world_tf_device`
+
+```python
+def world_tf_device(sample: pb.PoseSample, model: str | None = None, camera: str = 'main', warn: bool = True) -> np.ndarray
+```
+
+``world_tf_device`` from an ARKit pose: ``world_tf_ar @ ARCamera.transform @ arcam_tf_device``.
+
+### `imu_to_ros`
+
+```python
+def imu_to_ros(sample: pb.ImuSample, platform: Any = None) -> tuple[np.ndarray, np.ndarray]
+```
+
+``(accel, gyro)`` in the ``imu`` frame: accelerometer as specific force in m/s² (REP 145,
+flat screen-up z = +9.81), gyroscope in rad/s. iOS sends Core Motion's sign (gravity vector),
+so its accel is negated; Android already sends specific force.
+
+### `make_tf`
+
+```python
+def make_tf(rot: Any = None, pos: Any = None) -> np.ndarray
+```
+
+4×4 homogeneous transform from a 3×3 rotation and a translation (either may be omitted).
+
+### `inv_tf`
+
+```python
+def inv_tf(a_tf_b: np.ndarray) -> np.ndarray
+```
+
+``b_tf_a`` from ``a_tf_b`` (rigid transform: R^T, -R^T p). Also correct for a reflection.
+
+### `quat_to_rot`
+
+```python
+def quat_to_rot(q_xyzw: Any) -> np.ndarray
+```
+
+Unit quaternion ``(x, y, z, w)`` -> 3×3 rotation (normalised first).
+
+### `rot_to_quat`
+
+```python
+def rot_to_quat(rot: Any) -> np.ndarray
+```
+
+3×3 rotation -> unit quaternion ``(x, y, z, w)`` with ``w >= 0``.
+
+### `xyzw_to_wxyz`
+
+```python
+def xyzw_to_wxyz(q: Any) -> np.ndarray
+```
+
+``(x, y, z, w)`` -> ``(w, x, y, z)`` (MuJoCo, Isaac Sim).
+
+### `wxyz_to_xyzw`
+
+```python
+def wxyz_to_xyzw(q: Any) -> np.ndarray
+```
+
+``(w, x, y, z)`` -> ``(x, y, z, w)`` (ROS, SciPy).
+
+
+## `imuninn.hardware`
+
+iPhone hardware constants, no phone or network needed.
+
+### `get`
+
+```python
+def get(model: str) -> Phone
+```
+
+Hardware constants for a model: hardware identifier (``"iPhone18,1"``), dataset key
+(``"iphone-17-pro"``) or name (``"iPhone 17 Pro"``, case and spaces ignored).
+
+### `find`
+
+```python
+def find(model: str | None) -> Phone | None
+```
+
+Like `get`, but ``None`` for an unknown model.
+
+### `list_models`
+
+```python
+def list_models() -> list[str]
+```
+
+Model names in the dataset, oldest first.
+
+### `identifiers`
+
+```python
+def identifiers() -> dict[str, str]
+```
+
+Hardware identifier -> model name, for the models whose identifier is known.
+
+### `export`
+
+```python
+def export(model: str, fmt: str, path, prefix: str = '')
+```
+
+Write a model file for ``model``: ``fmt`` is ``"urdf"``, ``"mjcf"`` or ``"glb"`` (glb needs
+``pip install "imuninn[models]"``); ``path`` is a file or a directory. Returns the written path.
+Details: `models`.
+
+### `Phone`
+
+```python
+class Phone
+```
+
+Hardware constants of one model. Get one with `get`.
+
+#### `Phone.size_m` (property -> tuple[float, float, float])
+
+Body (width, height, thickness) in metres; thickness excludes the camera bump.
+
+#### `Phone.camera_bump_m` (property -> float | None)
+
+Height of the rear camera glass above the back plate, metres.
+
+#### `Phone.dimensions_review` (property -> str)
+
+Who checked this model's dimensions against Apple's drawing: ``"auto"`` (extracted
+automatically, not checked yet) or ``"human"`` (a person confirmed every value).
+
+#### `Phone.frames` (property -> tuple[str, ...])
+
+Frame names defined for this model (``device`` first).
+
+#### `Phone.device_tf`
+
+```python
+def device_tf(frame: str) -> np.ndarray
+```
+
+4×4 ``device_tf_<frame>``: the frame's pose in ``device``, metres.
+
+#### `Phone.tf`
+
+```python
+def tf(a: str, b: str) -> np.ndarray
+```
+
+4×4 ``a_tf_b`` between two frames of this model.
+
+#### `Phone.provenance`
+
+```python
+def provenance(frame: str) -> Provenance
+```
+
+Where ``frame``'s numbers come from and whether they were verified.
+
+#### `Phone.cameras` (property -> dict[str, Camera])
+
+Cameras by name (``main``, ``ultra_wide``, ``telephoto``, ``front``).
+
+#### `Phone.extras` (property -> dict[str, np.ndarray])
+
+Other features (flash, rear microphone, LiDAR, ...): position in ``device``, metres.
+
+#### `Phone.mass_kg` (property -> float)
+
+Rough mass for simulation: the body box at 2.3 g/cm³ (glass + aluminium + battery).
+Not a published figure; replace it with the real weight when it matters.
+
+#### `Phone.to_dict`
+
+```python
+def to_dict() -> dict
+```
+
+JSON-friendly summary in metres (what ``imuninn hardware show --json`` prints).
+
+### `Camera`
+
+```python
+class Camera
+```
+
+One camera of a model.
+
+### `Provenance`
+
+```python
+class Provenance
+```
+
+Where a frame's numbers come from.
+
+
+## `imuninn.models`
+
+Model files for one iPhone, generated from the packaged frame table (`hardware`).
+
+### `export`
+
+```python
+def export(ph: Phone | str, fmt: str, path: Any, prefix: str = '') -> Path
+```
+
+Write one model file; `path` is a file or an existing / new directory (then the file is
+``<dir>/iphone_17_pro.urdf`` etc.). Returns the written path.
+
+### `export_all`
+
+```python
+def export_all(fmt: str, directory: Any) -> list[Path]
+```
+
+Every model in the dataset into `directory` (what the release attachments are built from).
+
+### `export_bundle`
+
+```python
+def export_bundle(directory: Any, formats: tuple[str, ...] = FORMATS) -> dict
+```
+
+Every model in every format, ready to publish: ``<directory>/<format>/<model>.<ext>`` plus
+``<directory>/manifest.json`` listing each model's files and sizes (what the site's parameter
+page builds its download buttons from). Returns the manifest.
+
+### `to_urdf`
+
+```python
+def to_urdf(ph: Phone, prefix: str = '') -> str
+```
+
+URDF text: link ``<prefix>device`` and one fixed-joint link per frame (plus ``imu``).
+
+### `to_mjcf`
+
+```python
+def to_mjcf(ph: Phone, prefix: str = '') -> str
+```
+
+MJCF text: one body ``<prefix>device`` with geoms, inertia and a site per frame (no joint:
+attach it to your robot, or add ``<freejoint/>`` to let it fall).
+
+### `to_glb`
+
+```python
+def to_glb(ph: Phone) -> bytes
+```
+
+glTF binary: meshes for the body, rear lenses and the MagSafe ring, plus an empty node per frame.
 
 
 ## `imuninn.profiles`

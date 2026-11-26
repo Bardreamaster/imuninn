@@ -8,9 +8,30 @@ Field reference (generated): `docs/protocol/messages.md`.
 
 ## Versions
 
-- `VERSION` holds the integer protocol version, carried in every message header as `Header.protocol_version`.
-- Add, never change: removed fields become `reserved`; field numbers are never reused.
-- A change of meaning bumps the version too, even when field numbers stay the same.
+There are two levels:
+
+| level | where | changes when |
+| --- | --- | --- |
+| protocol version (an integer, now 7, written v7 in the docs) | the `VERSION` file; `Header.protocol_version` in every message, plus `Hello`, `Welcome` and `DeviceInfo` | a compatible change: plus 1 each time |
+| package name (`imuninn.v1`) | `package` in `imuninn.proto` | an incompatible change: becomes `imuninn.v2` |
+
+Rules:
+
+1. **Adding optional fields, messages or enum values bumps the integer by 1.** Old clients ignore fields they do not know, and new clients reading old data see the default (0, empty string, `false`), so a new field's default must mean "not reported".
+2. **Removing a field, changing a field number or type, or changing what an existing field means moves the package to `v2`.** None of that happens inside `v1`: unused fields become `reserved`, field numbers are never reused, and a change of meaning is made by adding a new field and leaving the old one as it was.
+3. **Clients gate a feature on "version ≥ N"; the two sides need not be equal.** Different versions are the normal case, since the app and the PC side update separately. The Python package and the web viewer only log one `protocol mismatch` line and keep working.
+
+The protocol version is independent of the app and Python package versions (such as 0.2.0). The coordinate-frame convention has its own integer, `frame_convention` (see [Coordinate frames](#coordinate-frames)); redefining frames does not always need a protocol change.
+
+What each version added (the values of N):
+
+| version | added |
+| --- | --- |
+| v3 | `health` stream (`DeviceHealth`) |
+| v4 | `DeviceConfig.session_params` |
+| v5 | `Hello.data_transport`, data streams over WebSocket (browsers) |
+| v6 | `audio` stream (`AudioChunk`) |
+| v7 | frame-convention metadata: `DeviceInfo.frame_convention` / `ar_capture_device_type`, `camera` / `mirrored` on `VideoFrame` / `DepthFrame` |
 
 ## Channels
 
@@ -36,9 +57,13 @@ Framing on TCP: `uint32 little-endian length` + `DataMessage` bytes. On UDP each
 
 ## Coordinate frames
 
-Poses keep the native ARKit / ARCore convention: right-handed, Y up, the camera looks down −Z. To get the OpenCV camera frame (X right, Y down, Z forward), negate the camera's Y and Z axes; the SDK does not convert for you.
+Everything on the wire stays in the platform's native frames; the phone converts nothing:
 
-Images are sent in sensor orientation; `rotation_deg` says how far to rotate clockwise for display. Intrinsics are in the same orientation as the image.
+- Poses are ARKit's `ARCamera.transform`: right-handed, world Y up, the camera looks down −Z.
+- IMU samples are in the Core Motion device frame (portrait: x right, y up, z out of the screen) with the platform's accelerometer sign (flat on iOS z ≈ −9.81, on Android ≈ +9.81).
+- Images are sent in sensor orientation; `rotation_deg` says how far to rotate clockwise for display, and intrinsics are in the same orientation as the image. Since v7 each frame also names its lens (`camera`) and whether it is mirrored (`mirrored`).
+
+Clients convert once, at their entry point, to the unified frames with the shared constants in `protocol/frames/` (`world` z up, `device`, `cam_*_optical` with OpenCV axes, IMU per REP 145). Since v7 the phone reports the convention version in `DeviceInfo.frame_convention` (currently 1) and the AR tracking camera in `ar_capture_device_type`. The Python package outputs the unified frames by default; see [Python · Coordinate frames](../docs/en/python/11-frames.md).
 
 ## Code generation
 

@@ -164,7 +164,7 @@ def iter_chunks(path: str | Path) -> Iterator[pb.AudioChunk]:
             if msg.WhichOneof("body") == "audio":
                 yield msg.audio
     else:
-        for _, sample in replay(path, topics=["/audio"]):
+        for _, sample in replay(path, topics=["/audio"], frames="raw"):
             yield sample
 
 

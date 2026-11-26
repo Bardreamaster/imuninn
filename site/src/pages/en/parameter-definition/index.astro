@@ -1,0 +1,13 @@
+---
+// iPhone parameter page, English. Chinese (root locale): ../../parameter-definition/index.astro.
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import ParameterDefinition from "../../../components/ParameterDefinition.astro";
+---
+<StarlightPage frontmatter={{
+  title: "iPhone parameter definition",
+  description: "Body dimensions and coordinate frames of 30 iPhone models: the device, MagSafe and each camera's optical frame, from Apple's dimensional drawings, shown in 3D.",
+  template: "splash",
+  tableOfContents: false,
+}}>
+  <ParameterDefinition lang="en" />
+</StarlightPage>

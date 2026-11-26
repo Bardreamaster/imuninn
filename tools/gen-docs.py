@@ -55,7 +55,11 @@ PUBLIC = [
     ("imuninn.depth", None),
     ("imuninn.audio", None),
     ("imuninn.video", ["H264Decoder"]),
-    ("imuninn.mcap_io", ["McapRecorder", "replay", "convert", "summary"]),
+    ("imuninn.mcap_io", ["McapRecorder", "replay", "convert", "summary", "read_frame_convention", "frame_converter"]),
+    ("imuninn.frames", ["FrameConverter", "Pose", "Imu", "device_tf_camera", "device_rot_optical", "world_tf_device",
+                        "imu_to_ros", "make_tf", "inv_tf", "quat_to_rot", "rot_to_quat", "xyzw_to_wxyz", "wxyz_to_xyzw"]),
+    ("imuninn.hardware", ["get", "find", "list_models", "identifiers", "export", "Phone", "Camera", "Provenance"]),
+    ("imuninn.models", ["export", "export_all", "export_bundle", "to_urdf", "to_mjcf", "to_glb"]),
     ("imuninn.profiles", ["builtin_profiles", "load", "to_patch", "from_config", "dump", "resolve_path"]),
 ]
 

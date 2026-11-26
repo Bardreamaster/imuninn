@@ -96,7 +96,7 @@ For long pushes turn on `session.black_screen`: near-zero display power, less he
 
 ## Data semantics
 
-- Pose: native ARKit convention (right-handed, Y up, camera looks down −Z); the world origin is the camera pose when the session started; `intrinsics` match the ARKit image resolution.
-- IMU: `accel` is gravity + user acceleration, `gyro` is CoreMotion's bias-corrected angular rate; with `imu.raw = true` you get the raw sensors with their own timestamps.
+- Pose: the phone sends the native ARKit convention (right-handed, Y up, camera looks down −Z); the Python package converts it to the unified frames (`world` z up, `device` with Core Motion axes; the values as sent stay in `pose.raw`). The world origin is the camera pose when the session started; `intrinsics` match the ARKit image resolution. See [Coordinate frames](11-frames.md).
+- IMU: `accel` is gravity + user acceleration, converted to the REP 145 sign (flat, screen up: z = +9.81; as sent in `imu.raw_accel`), `gyro` is CoreMotion's bias-corrected angular rate; with `imu.raw = true` you get the raw sensors with their own timestamps.
 - Images and depth are sent in sensor orientation with `rotation_deg = 90` (rotate clockwise by 90° for upright portrait); intrinsics are in sensor orientation. Details: [Camera coordinate systems](../../dev/06-camera-coordinates.md) (Chinese, with Apple references).
 - Timestamps: the phone's monotonic clock in nanoseconds, one time base for every stream; `dev.to_pc_time()` converts to the PC clock.

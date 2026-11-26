@@ -96,7 +96,7 @@ for h in dev.iter("health"):
 
 ## 数据语义
 
-- 位姿：ARKit 原生约定（右手系、Y 上、相机朝 −Z），世界原点是会话开始时的相机位置；`intrinsics` 对应 ARKit 图像分辨率。
-- IMU：`accel` 是重力 + 用户加速度，`gyro` 是 CoreMotion 偏置校正后的角速度；`imu.raw = true` 时给原始传感器值，各自时间戳。
+- 位姿：手机发 ARKit 原生约定（右手系、Y 上、相机朝 −Z），Python 包收到后换算成统一坐标系：`world` z 朝上，`device` 为 Core Motion 轴向，原样数值留在 `pose.raw`；世界原点是会话开始时的相机位置；`intrinsics` 对应 ARKit 图像分辨率。详见[坐标系与手机硬件常量](11-frames.md)。
+- IMU：`accel` 是重力 + 用户加速度，换算后按 REP 145 符号（平放屏幕朝上 z = +9.81，原样值在 `imu.raw_accel`），`gyro` 是 CoreMotion 偏置校正后的角速度；`imu.raw = true` 时给原始传感器值，各自时间戳。
 - 图像与深度按传感器原始方向发送，`rotation_deg = 90`（顺时针转 90° 得到竖屏正向），内参是传感器方向下的；坐标系细节见[开发者 · 相机坐标系参考](../dev/06-camera-coordinates.md)。
 - 时间戳：手机单调时钟（纳秒），各流同一时基；`dev.to_pc_time()` 转 PC 墙钟。

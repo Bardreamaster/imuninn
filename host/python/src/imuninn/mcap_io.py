@@ -8,17 +8,27 @@ written as-is, one topic per stream, so the dataset format *is* the protocol.
 Topics: /imu (ImuSample), /ar_pose (PoseSample), /rgb (VideoFrame), /depth (DepthFrame),
 /audio (AudioChunk), /gap (Gap), /config (ConfigChanged). log_time = PC wall clock (when recording live) or
 device time (when converting); publish_time = device monotonic time, always.
+
+Messages are stored exactly as the phone sent them (Apple native frames). Files written by this
+package also carry an MCAP metadata record "imuninn" with "frame_convention" (and the package and
+protocol versions); files without it (older recordings, converted phone files before 0.3) read as
+frame_convention 0, which converts the same way. `replay()` yields pose / IMU in the unified frames
+by default (imuninn.frames); `replay(..., frames="raw")` and `replay_timed()` give the messages as stored.
 """
 
 from __future__ import annotations
 
+import logging
 import time
 from pathlib import Path
 from typing import Iterator
 
 from .proto import imuninn_pb2 as pb
 
+log = logging.getLogger("imuninn.mcap")
+
 MAGIC = b"IMUNINN1"
+METADATA_NAME = "imuninn"
 
 _TOPIC_TO_CLASS = {
     "/imu": "ImuSample", "/ar_pose": "PoseSample", "/rgb": "VideoFrame", "/depth": "DepthFrame",
@@ -54,6 +64,7 @@ class McapRecorder:
         self._w = Writer(self._f)
         self.count = 0
         self.clock_offset_ns = clock_offset_ns
+        self._w.add_metadata(METADATA_NAME, _metadata(device))
         if device is not None:
             self._w.write_message("/device", device, log_time=time.time_ns(), publish_time=0)
         if capabilities is not None:
@@ -91,6 +102,34 @@ class McapRecorder:
         self.close()
 
 
+def _metadata(device: pb.DeviceInfo | None) -> dict[str, str]:
+    from . import PROTOCOL_VERSION, __version__
+    from .frames import FRAME_CONVENTION
+
+    md = {"frame_convention": str(FRAME_CONVENTION), "imuninn_version": __version__,
+          "protocol_version": str(PROTOCOL_VERSION)}
+    if device is not None:
+        md["device_model"] = device.model
+        md["phone_frame_convention"] = str(getattr(device, "frame_convention", 0))
+    return md
+
+
+def read_metadata(path: str | Path) -> dict[str, str]:
+    """The file's "imuninn" metadata record ({} for files written before 0.3)."""
+    from mcap.reader import make_reader  # type: ignore
+
+    with open(path, "rb") as f:
+        for rec in make_reader(f).iter_metadata():
+            if rec.name == METADATA_NAME:
+                return dict(rec.metadata)
+    return {}
+
+
+def read_frame_convention(path: str | Path) -> int:
+    """``frame_convention`` recorded in the file, 0 when absent (recorded before 0.3)."""
+    return int(read_metadata(path).get("frame_convention", 0))
+
+
 def read_phone_recording(path: str | Path) -> Iterator[pb.DataMessage]:
     """Iterate a phone-side `.imuninn` recording (magic + length-prefixed DataMessage)."""
     with open(path, "rb") as f:
@@ -109,9 +148,12 @@ def read_phone_recording(path: str | Path) -> Iterator[pb.DataMessage]:
             yield msg
 
 
-def convert(src: str | Path, dst: str | Path) -> int:
-    """Phone recording -> MCAP. log_time = device time (no PC clock available)."""
-    with McapRecorder(dst) as rec:
+def convert(src: str | Path, dst: str | Path, device: pb.DeviceInfo | None = None) -> int:
+    """Phone recording -> MCAP. log_time = device time (no PC clock available).
+
+    Phone recordings carry no DeviceInfo; pass `device` (e.g. ``DeviceInfo(model="iPhone18,1")``)
+    to store one on ``/device`` so replays know the model for camera offsets."""
+    with McapRecorder(dst, device=device) as rec:
         for msg in read_phone_recording(src):
             body = msg.WhichOneof("body")
             sample = getattr(msg, body)
@@ -120,10 +162,31 @@ def convert(src: str | Path, dst: str | Path) -> int:
         return rec.count
 
 
-def replay(path: str | Path, realtime: bool = False, topics: list[str] | None = None) -> Iterator[tuple[str, object]]:
-    """Yield (stream_id, sample) from an MCAP file. `realtime=True` sleeps to reproduce timing."""
+def replay(path: str | Path, realtime: bool = False, topics: list[str] | None = None,
+           frames: str = "unified", model: str | None = None) -> Iterator[tuple[str, object]]:
+    """Yield (stream_id, sample) from an MCAP file. `realtime=True` sleeps to reproduce timing.
+
+    `frames="unified"` (default): pose and IMU samples come as :class:`imuninn.frames.Pose` /
+    :class:`imuninn.frames.Imu`, using the model from the file's ``/device`` topic (live
+    recordings) or `model` (needed for files converted from phone recordings, which have no
+    ``/device``; without it the camera offsets are 0 and a warning is logged).
+    `frames="raw"`: every message as stored."""
+    from .frames import check_mode
+
+    conv = frame_converter(path, model) if check_mode(frames) == "unified" else None
     for stream, sample, _ in replay_timed(path, realtime=realtime, topics=topics):
-        yield stream, sample
+        yield stream, (conv.convert(sample) if conv is not None else sample)
+
+
+def frame_converter(path: str | Path, model: str | None = None):
+    """:class:`imuninn.frames.FrameConverter` for a recording (its ``/device`` info, or `model`)."""
+    from .frames import FRAME_CONVENTION, FrameConverter
+
+    fc = read_frame_convention(path)
+    if fc > FRAME_CONVENTION:
+        log.warning("%s was written with frame_convention %d, this package knows %d: update imuninn",
+                    path, fc, FRAME_CONVENTION)
+    return FrameConverter.from_device_info(read_device_info(path), model=model)
 
 
 def read_device_info(path: str | Path) -> pb.DeviceInfo | None:

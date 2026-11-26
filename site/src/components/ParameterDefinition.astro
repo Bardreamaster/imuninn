@@ -1,0 +1,246 @@
+---
+// The iPhone parameter page (/parameter-definition/ and /en/parameter-definition/): a 3D view of
+// one phone model with its six coordinate frames, next to the numbers. The data is
+// protocol/frames/iphone-frames.json, served by pages/parameter-definition/iphone-frames.json.js
+// and fetched here, so the page, the Python package and the docs all read one file.
+// Rendered inside <StarlightPage> (site header, theme and language switches); the styles at the
+// bottom turn Starlight's article layout into a full-height tool.
+interface Props { lang: "zh" | "en" }
+const { lang } = Astro.props;
+
+const STRINGS = {
+  zh: {
+    title: "iPhone 参数定义",
+    intro: "按 Apple 公开的外观尺寸图参数化生成的机身和 6 个坐标系。单位 mm，位置都在 device 坐标系下表达。",
+    docsLink: "坐标系说明", docsHref: "/python/frames/", dataLink: "iphone-frames.json",
+    model: "型号", identifier: "机型标识", identifierUnknown: "未知", drawingDated: "图纸日期", drawingPdf: "原图 PDF",
+    dimensions: "尺寸", width: "宽", height: "高", thickness: "厚",
+    reviewAuto: "自动识别", reviewHuman: "已人工核验",
+    reviewAutoNote: "数值由程序从尺寸图读出，还没有人逐项核对。",
+    reviewHumanNote: "数值已由人对照尺寸图逐项确认。",
+    opacity: "机身透明度", labels: "标签", cones: "视场锥", extras: "闪光灯等",
+    framesHeading: "坐标系（点选高亮）", missing: "此型号没有",
+    copy: "复制当前型号 JSON", copied: "已复制", copyBlocked: "浏览器不允许复制",
+    downloads: "下载 3D 模型", formats: { urdf: "URDF", mjcf: "MJCF", glb: "glTF (.glb)" },
+    downloadNote: "含全部坐标系，单位 m。外形是近似的：URDF 和 MJCF 用长方体，glb 用估计的圆角；质量按体积估算。",
+    views: { iso: "斜视", front: "正面", back: "背面", side: "侧面" },
+    canvasLabel: "iPhone 3D 模型", loading: "正在加载数据…", loadFailed: "数据加载失败，请刷新重试。",
+    noWebgl: "这个浏览器没有开启 WebGL，不能显示 3D 模型；左侧的数值仍然可用。",
+    frames: {
+      device: "机身", magsafe: "MagSafe 中心", cam_main_optical: "主摄", cam_ultra_wide_optical: "超广角",
+      cam_telephoto_optical: "长焦", cam_front_optical: "前摄",
+    },
+    provenance: { definition: "定义", drawing: "图纸标注", role_inferred: "角色推断", estimated: "估计" },
+    definitions: {
+      device: "屏幕显示区中心，在前盖玻璃外表面。+X 指向右边框，+Y 指向顶部，+Z 垂直屏幕朝外，与 Core Motion 设备坐标系相同。",
+      magsafe: "背面 MagSafe 圆的圆心，在背板外表面。+Z 垂直背板朝外，+Y 与机身 +Y 相同。",
+      rear: "镜头窗口中心，在摄像头盖玻璃外表面。OpenCV 光学系，以未旋转的原生图像为准：+X 图像向右（机身 −Y），+Y 图像向下（机身 −X），+Z 为拍摄方向（朝背面外）。",
+      front: "前摄中心投影到前盖玻璃外表面的点。OpenCV 光学系，以未镜像的原生图像为准，+Z 为拍摄方向（朝屏幕外）；x、y 取决于传感器旋转，这里按 rotation_deg = {deg} 取。",
+    },
+    cone: "视场 keep-out 锥 {deg}°",
+    orientationUntested: "朝向由 Apple 文档推导，还没有在真机上核对。",
+    notes: [
+      "直接来自图纸：外形、显示区、MagSafe 圆心、后摄窗口中心和玻璃高度。后摄哪一颗是主摄，是按视场锥角推断的。",
+      "MagSafe 磁环（内径 46.00、外径 54.10）和下方的定位磁铁（6.00 × 19.31）取自 Apple Accessory Design Guidelines 图 41-2，圆心用尺寸图上的 MagSafe 中心。16e 和 SE 没有磁铁，只画无线充电区域的细线。",
+      "近似处理：机身圆角半径和边缘倒角、摄像头平台的形状（按镜头外包框加 3 mm 画）、灵动岛和刘海的外形，只为看着像，不参与坐标计算。",
+      "标“估计”的前摄位置是从 keep-out 区域推出来的，刘海机型 X 方向可能差 10 mm 以上。",
+    ],
+  },
+  en: {
+    title: "iPhone parameter definition",
+    intro: "iPhone bodies and six coordinate frames, generated from Apple's published dimensional drawings. Units are mm; every position is expressed in the device frame.",
+    docsLink: "About the frames", docsHref: "/en/python/frames/", dataLink: "iphone-frames.json",
+    model: "Model", identifier: "Identifier", identifierUnknown: "unknown", drawingDated: "Drawing dated", drawingPdf: "drawing PDF",
+    dimensions: "Dimensions", width: "Width", height: "Height", thickness: "Thickness",
+    reviewAuto: "Auto-extracted", reviewHuman: "Human-verified",
+    reviewAutoNote: "Values were read off the drawing by a program; nobody has checked them one by one yet.",
+    reviewHumanNote: "A person has compared every value with the drawing.",
+    opacity: "Body opacity", labels: "Labels", cones: "View cones", extras: "Flash etc.",
+    framesHeading: "Frames (click to highlight)", missing: "Not on this model",
+    copy: "Copy this model's JSON", copied: "Copied", copyBlocked: "The browser blocked the copy",
+    downloads: "Download 3D model", formats: { urdf: "URDF", mjcf: "MJCF", glb: "glTF (.glb)" },
+    downloadNote: "Includes every frame; units are metres. Shapes are approximate: a box in URDF and MJCF, an estimated corner radius in glb; the mass is estimated from the volume.",
+    views: { iso: "Angled", front: "Front", back: "Back", side: "Side" },
+    canvasLabel: "3D model of the iPhone", loading: "Loading the data…", loadFailed: "Could not load the data. Reload to try again.",
+    noWebgl: "WebGL is off in this browser, so the 3D model cannot be shown; the numbers on the left still work.",
+    frames: {
+      device: "Device", magsafe: "MagSafe centre", cam_main_optical: "Main camera", cam_ultra_wide_optical: "Ultra-wide camera",
+      cam_telephoto_optical: "Telephoto camera", cam_front_optical: "Front camera",
+    },
+    provenance: { definition: "Definition", drawing: "On the drawing", role_inferred: "Role inferred", estimated: "Estimated" },
+    definitions: {
+      device: "Centre of the display active area, on the outer surface of the front glass. +X toward the right edge, +Y toward the top, +Z out of the screen: the same axes as Core Motion's device frame.",
+      magsafe: "Centre of the MagSafe circle, on the outer surface of the back plate. +Z out of the back, +Y the same as the device's +Y.",
+      rear: "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the unrotated native image: +X image right (device −Y), +Y image down (device −X), +Z the viewing direction (out of the back).",
+      front: "Front camera centre projected onto the outer surface of the front glass. OpenCV optical axes of the unmirrored native image, +Z the viewing direction (out of the screen); x and y depend on the sensor rotation, taken here as rotation_deg = {deg}.",
+    },
+    cone: "Field-of-view keep-out cone {deg}°",
+    orientationUntested: "Orientation derived from Apple's documentation; not yet checked on a phone.",
+    notes: [
+      "Straight from the drawings: outline, display area, MagSafe centre, rear lens window centres and glass height. Which rear lens is the main one is inferred from its field-of-view cone.",
+      "The MagSafe magnet ring (inner 46.00, outer 54.10) and the clocking magnet below it (6.00 × 19.31) are from Apple's Accessory Design Guidelines figure 41-2, centred on the drawing's MagSafe centre. The 16e and SE have no magnets, so only the wireless-charging area is outlined.",
+      "Approximations, for looks only and not used in any coordinate: the corner radius and edge bevel, the camera plateau outline (bounding box of the lenses plus 3 mm), and the Dynamic Island and notch shapes.",
+      "Front-camera positions marked “Estimated” are derived from the keep-out area; on notch models they can be off by more than 10 mm along X.",
+    ],
+  },
+};
+const t = STRINGS[lang];
+const DATA_URL = "/parameter-definition/iphone-frames.json";
+// Model files and their manifest are static files under public/, generated by
+// `imuninn hardware export --all --format all -o site/public/parameter-definition/models`.
+const MODELS_URL = "/parameter-definition/models/";
+---
+<div class="not-content pd-app" data-src={DATA_URL} data-models={MODELS_URL}>
+  <aside class="pd-panel">
+    <div>
+      <h2 class="pd-title">{t.title}</h2>
+      <p class="pd-sub">{t.intro}</p>
+      <p class="pd-sub pd-links"><a href={t.docsHref}>{t.docsLink}</a><a href={DATA_URL}>{t.dataLink}</a></p>
+    </div>
+    <div>
+      <label class="pd-heading" for="pd-model">{t.model}</label>
+      <select id="pd-model" data-pd="model"></select>
+      <p class="pd-sub" data-pd="drawing">{t.loading}</p>
+    </div>
+    <div>
+      <div class="pd-heading-row">
+        <span class="pd-heading">{t.dimensions}</span>
+        <span class="pd-badge pd-pending" data-pd="review"></span>
+      </div>
+      <div class="pd-specs" data-pd="specs"></div>
+      <p class="pd-sub" data-pd="reviewNote"></p>
+    </div>
+    <div>
+      <label class="pd-heading" for="pd-alpha">{t.opacity}</label>
+      <input type="range" id="pd-alpha" data-pd="alpha" min="0.15" max="1" step="0.05" value="0.55" />
+    </div>
+    <div class="pd-row">
+      <label class="pd-toggle"><input type="checkbox" data-pd="showLabels" checked /> {t.labels}</label>
+      <label class="pd-toggle"><input type="checkbox" data-pd="cones" /> {t.cones}</label>
+      <label class="pd-toggle"><input type="checkbox" data-pd="extras" checked /> {t.extras}</label>
+    </div>
+    <div>
+      <span class="pd-heading">{t.framesHeading}</span>
+      <div class="pd-frames" data-pd="frames"></div>
+    </div>
+    <div data-pd="downloads" hidden>
+      <span class="pd-heading">{t.downloads}</span>
+      <div class="pd-row" data-pd="downloadLinks"></div>
+      <p class="pd-sub">{t.downloadNote}</p>
+    </div>
+    <div class="pd-row">
+      <button class="pd-button" data-pd="copy" type="button">{t.copy}</button>
+      <span class="pd-sub" data-pd="copyMessage" aria-live="polite"></span>
+    </div>
+    <div class="pd-notes">{t.notes.map((line) => <p>{line}</p>)}</div>
+  </aside>
+  <section class="pd-stage" data-pd="stage" aria-label={t.canvasLabel}>
+    <canvas data-pd="canvas"></canvas>
+    <div class="pd-labels" data-pd="labels"></div>
+    <p class="pd-nogl" data-pd="nogl" hidden>{t.noWebgl}</p>
+    <div class="pd-views">
+      {Object.entries(t.views).map(([view, label]) => <button class="pd-button" type="button" data-pd-view={view}>{label}</button>)}
+    </div>
+    <div class="pd-legend" aria-hidden="true"><span><i class="pd-x"></i>X</span><span><i class="pd-y"></i>Y</span><span><i class="pd-z"></i>Z</span></div>
+  </section>
+</div>
+<script type="application/json" id="pd-strings" set:html={JSON.stringify(t)}></script>
+
+<script>
+  import { initParameterViewer } from "../scripts/parameter-viewer.js";
+
+  const root = document.querySelector<HTMLElement>(".pd-app")!;
+  const strings = JSON.parse(document.getElementById("pd-strings")!.textContent!);
+  const getJson = (url: string) => fetch(url).then((response) => { if (!response.ok) throw new Error(`${url}: ${response.status}`); return response.json(); });
+  // The model manifest is optional: without it the page works and just shows no download buttons.
+  const manifest = getJson(root.dataset.models + "manifest.json").catch(() => null);
+  Promise.all([getJson(root.dataset.src!), manifest])
+    .then(([data, models]) => initParameterViewer(root, strings, data, models && { base: root.dataset.models, manifest: models }))
+    .catch((error) => {
+      console.error("parameter page:", error);
+      root.querySelector('[data-pd="drawing"]')!.textContent = strings.loadFailed;
+    });
+</script>
+
+<style is:global>
+  /* Starlight's article layout -> a full-height tool. These rules load only on this page. The
+     page title stays in the document for screen readers and search; the panel shows it visually. */
+  :root { --sl-main-pad: 0; }
+  main > .content-panel:first-of-type { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; padding: 0; }
+  main > .content-panel + .content-panel { padding: 0; border-top: 0; }
+  main .sl-container { max-width: none; margin-inline: 0; }
+  main .sl-container > footer { display: none; }
+
+  .pd-app {
+    --pd-bg: var(--im-bg); --pd-panel: var(--im-card); --pd-chip: var(--im-card-alt); --pd-stage: var(--im-card-alt);
+    --pd-text: var(--im-text); --pd-muted: var(--im-muted); --pd-line: var(--im-border); --pd-accent: var(--im-accent);
+    --pd-ok: var(--im-ok); --pd-pending-text: var(--im-warn-text);
+    --pd-ax-x: #f0655c; --pd-ax-y: #4cc27a; --pd-ax-z: #6a9cf0;
+    display: grid; grid-template-columns: minmax(300px, 380px) 1fr;
+    height: calc(100dvh - var(--sl-nav-height));
+    background: var(--pd-bg); color: var(--pd-text); font-size: 14px; line-height: 1.5;
+  }
+  :root[data-theme="light"] .pd-app { --pd-ax-x: #d9433b; --pd-ax-y: #2f9e55; --pd-ax-z: #2f6fdb; --pd-stage: oklch(93% 0.008 255); }
+
+  .pd-panel { background: var(--pd-panel); border-inline-end: 1px solid var(--pd-line); overflow-y: auto; padding: 18px 16px 24px;
+    display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .pd-title { font-size: 18px; font-weight: 600; margin: 0; line-height: 1.3; color: var(--pd-text); }
+  .pd-sub { color: var(--pd-muted); font-size: 12.5px; margin: 4px 0 0; }
+  .pd-sub code { font-family: var(--__sl-font-mono); font-size: 12px; background: none; padding: 0; color: var(--pd-text); }
+  .pd-app a { color: var(--pd-accent); }
+  .pd-links { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .pd-heading { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pd-muted); margin-bottom: 6px; }
+  .pd-heading-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .pd-heading-row .pd-heading { margin-bottom: 0; }
+  .pd-app select, .pd-app input[type="range"] { width: 100%; }
+  .pd-app select { font: inherit; padding: 7px 8px; border-radius: 6px; border: 1px solid var(--pd-line); background: var(--pd-panel); color: var(--pd-text); }
+  .pd-app input[type="range"], .pd-app input[type="checkbox"] { accent-color: var(--pd-accent); }
+  .pd-specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pd-spec { background: var(--pd-chip); border-radius: 6px; padding: 7px 9px; }
+  .pd-spec b { display: block; font-family: var(--__sl-font-mono); font-weight: 500; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .pd-spec span { font-size: 11px; color: var(--pd-muted); }
+  .pd-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .pd-button, .pd-toggle { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--pd-line);
+    background: var(--pd-panel); color: var(--pd-text); cursor: pointer; }
+  .pd-button:hover, .pd-toggle:hover { border-color: var(--pd-accent); }
+  .pd-app a.pd-button { color: var(--pd-text); text-decoration: none; display: inline-flex; align-items: baseline; gap: 6px; }
+  .pd-size { font-size: 11px; color: var(--pd-muted); font-variant-numeric: tabular-nums; }
+  .pd-app :is(button, select, input):focus-visible { outline: 2px solid var(--pd-accent); outline-offset: 2px; }
+  .pd-toggle { display: inline-flex; align-items: center; gap: 6px; }
+  .pd-frames { display: flex; flex-direction: column; gap: 6px; }
+  .pd-frame { font: inherit; color: var(--pd-text); border: 1px solid var(--pd-line); border-radius: 8px; padding: 9px 10px; cursor: pointer;
+    text-align: start; width: 100%; background: var(--pd-panel); }
+  .pd-frame:disabled { cursor: default; color: var(--pd-muted); }
+  .pd-frame[aria-pressed="true"] { border-color: var(--pd-accent); box-shadow: inset 3px 0 0 var(--pd-accent); }
+  .pd-frame-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .pd-frame-name { font-weight: 600; }
+  .pd-frame-key { font-family: var(--__sl-font-mono); font-size: 11.5px; color: var(--pd-muted); overflow-wrap: anywhere; }
+  .pd-frame-xyz { font-family: var(--__sl-font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .pd-frame-details { font-size: 11.5px; color: var(--pd-muted); margin-top: 6px; line-height: 1.45; display: none; overflow-wrap: anywhere; }
+  .pd-frame[aria-pressed="true"] .pd-frame-details { display: block; }
+  .pd-badge { font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: var(--pd-chip); color: var(--pd-muted); white-space: nowrap; }
+  .pd-badge.pd-pending { background: color-mix(in oklch, var(--im-warn) 22%, transparent); color: var(--pd-pending-text); }
+  .pd-badge.pd-ok { background: color-mix(in oklch, var(--pd-ok) 20%, transparent); color: var(--pd-ok); }
+  .pd-notes { font-size: 12px; color: var(--pd-muted); line-height: 1.55; border-top: 1px solid var(--pd-line); padding-top: 12px; }
+  .pd-notes p { margin: 0 0 6px; }
+
+  .pd-stage { position: relative; background: var(--pd-stage); min-width: 0; overflow: hidden; }
+  .pd-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  .pd-labels { position: absolute; inset: 0; pointer-events: none; }
+  .pd-label { position: absolute; transform: translate(8px, -50%); font-family: var(--__sl-font-mono); font-size: 11.5px; white-space: nowrap;
+    background: color-mix(in oklch, var(--pd-panel) 85%, transparent); border: 1px solid var(--pd-line); padding: 1px 6px; border-radius: 4px; }
+  .pd-label.pd-selected { border-color: var(--pd-accent); color: var(--pd-accent); }
+  .pd-nogl { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px; text-align: center; color: var(--pd-muted); }
+  .pd-nogl[hidden] { display: none; }
+  .pd-legend { position: absolute; inset-inline-start: 12px; bottom: 12px; display: flex; gap: 10px; font-family: var(--__sl-font-mono); font-size: 12px;
+    background: color-mix(in oklch, var(--pd-panel) 85%, transparent); padding: 5px 9px; border-radius: 6px; border: 1px solid var(--pd-line); }
+  .pd-legend i { display: inline-block; width: 16px; height: 4px; border-radius: 2px; vertical-align: middle; margin-inline-end: 4px; }
+  .pd-x { background: var(--pd-ax-x); } .pd-y { background: var(--pd-ax-y); } .pd-z { background: var(--pd-ax-z); }
+  .pd-views { position: absolute; inset-inline-end: 12px; top: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+  @media (max-width: 760px) {
+    .pd-app { grid-template-columns: 1fr; grid-template-rows: 58dvh auto; height: auto; }
+    .pd-stage { order: -1; height: 58dvh; }
+    .pd-panel { border-inline-end: 0; overflow: visible; }
+  }
+</style>

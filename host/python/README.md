@@ -36,7 +36,7 @@ with imuninn.connect() as dev:              # first phone found; or a name / IP 
     dev.start()                             # capture session on
     for pose in dev.iter("ar_pose"):        # also "imu", "rgb", "depth", "health"
         t = dev.to_pc_time(pose.header.device_time_ns)
-        print(t, pose.position, pose.intrinsics.fx)
+        print(t, pose.world_pos_device, pose.intrinsics.fx)
 ```
 
 Everything is synchronous; the asyncio client (`imuninn.client.PhoneClient`) is there if you want to drive it yourself. Parameters are self-describing (`dev.capabilities`), can be grouped into YAML profiles (`dev.apply_profile("calibration")`), and a config lease keeps several PCs from fighting over one phone.
@@ -58,7 +58,7 @@ All commands take an optional phone target (`iPhone`, `10.0.0.5`, `10.0.0.5:7420
 
 ## Data
 
-Pose: ARKit convention (right-handed, Y up, camera looks down −Z), with camera intrinsics in every sample. Video: H.264 Annex-B, sensor orientation plus `rotation_deg`. Depth: uint16 millimetres + confidence, LZ4. Timestamps: device monotonic time plus a measured offset to the PC clock. The wire format is `imuninn/proto/imuninn.proto` inside the package.
+Pose and IMU arrive in unified robotics frames: a z-up `world`, a `device` frame with Core Motion axes, OpenCV optical frames for the cameras, accelerometer with the REP 145 sign; `frames="raw"` gives the ARKit / Core Motion values as sent. Camera positions for 30 iPhone models ship with the package (`imuninn.hardware`), with URDF / MJCF / glTF export. Camera intrinsics come with every sample. Video: H.264 Annex-B, sensor orientation plus `rotation_deg`. Depth: uint16 millimetres + confidence, LZ4. Timestamps: device monotonic time plus a measured offset to the PC clock. The wire format is `imuninn/proto/imuninn.proto` inside the package.
 
 ## License
 
