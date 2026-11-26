@@ -6,7 +6,8 @@ Every command that talks to a phone takes an optional `target`: a Bonjour name, 
 
 ```
 usage: imuninn [-h] [--version]
-               {list,watch,rerun,record,convert,web,export-audio,info,profile} ...
+               {list,watch,rerun,to-rrd,browse,record,convert,web,export-audio,info,hardware,profile}
+               ...
 ```
 
 ## imuninn list
@@ -26,7 +27,8 @@ options:
 print incoming samples as text
 
 ```
-usage: imuninn watch [-h] [--start] [--stream STREAM] [--every EVERY] [target]
+usage: imuninn watch [-h] [--start] [--stream STREAM] [--every EVERY] [--raw]
+                     [target]
 
 positional arguments:
   target           phone name, host, or host:port (default: first phone found)
@@ -36,6 +38,8 @@ options:
   --start          send SessionControl START after connect
   --stream STREAM  only this stream id (default: all)
   --every EVERY    print one sample out of N
+  --raw            print pose / IMU as sent (ARKit y-up world, Core Motion
+                   accel sign) instead of the unified frames
 ```
 
 ## imuninn rerun
@@ -49,7 +53,8 @@ usage: imuninn rerun [-h] [--start] [--depth] [--no-spawn]
                      [--points] [--point-stride POINT_STRIDE]
                      [--points-hz POINTS_HZ] [--no-trajectory]
                      [--no-blueprint] [--mcap MCAP] [--save SAVE]
-                     [--seconds SECONDS]
+                     [--seconds SECONDS] [--frames {unified,raw}]
+                     [--model MODEL]
                      [target ...]
 
 positional arguments:
@@ -86,6 +91,91 @@ options:
   --mcap MCAP           replay this MCAP file instead of connecting to a phone
   --save SAVE           write a .rrd file instead of opening the viewer
   --seconds SECONDS     stop after this long (live mode)
+  --frames {unified,raw}
+                        unified: z-up world, device and camera optical frames
+                        (default); raw: ARKit y-up world as sent
+  --model MODEL         with --mcap: phone model for camera offsets when the
+                        file has no /device topic, e.g. "iPhone18,1"
+```
+
+## imuninn to-rrd
+
+convert every .mcap under a folder to Rerun .rrd files (skips up-to-date ones)
+
+```
+usage: imuninn to-rrd [-h] [-o OUTPUT] [--video {stream,decode,off}]
+                      [--scale SCALE] [--frames {unified,raw}] [--model MODEL]
+                      [--force] [-j JOBS]
+                      input
+
+positional arguments:
+  input                 folder searched recursively for .mcap files (or one
+                        .mcap file)
+
+options:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        folder for the .rrd files (default: <input>/_rerun;
+                        other --video / --frames settings get their own
+                        _rerun-<setting> folder)
+  --video {stream,decode,off}
+                        stream: keep the H.264 video as recorded (default,
+                        about the MCAP size); decode: store decoded JPEG
+                        frames (much larger and slower); off: no video
+  --scale SCALE         with --video decode: downscale the stored frames (1 =
+                        full size, the default)
+  --frames {unified,raw}
+                        unified: z-up world, device and camera optical frames
+                        (default); raw: ARKit y-up world
+  --model MODEL         phone model for camera offsets when a file has no
+                        /device topic, e.g. "iPhone18,1"
+  --force               convert again even when the .rrd is newer than the
+                        .mcap
+  -j JOBS, --jobs JOBS  files converted in parallel (default: half the CPU
+                        cores)
+```
+
+## imuninn browse
+
+browse a folder of .mcap recordings in the Rerun viewer: convert to .rrd after a confirmation, then open them as a dataset (pick one, it plays)
+
+```
+usage: imuninn browse [-h] [-o OUTPUT] [--video {stream,decode,off}]
+                      [--scale SCALE] [--frames {unified,raw}] [--model MODEL]
+                      [--force] [-j JOBS] [-y] [--name NAME] [--port PORT]
+                      [--no-viewer]
+                      input
+
+positional arguments:
+  input                 folder searched recursively for .mcap files (or one
+                        .mcap file)
+
+options:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        folder for the .rrd files (default: <input>/_rerun;
+                        other --video / --frames settings get their own
+                        _rerun-<setting> folder)
+  --video {stream,decode,off}
+                        stream: keep the H.264 video as recorded (default,
+                        about the MCAP size); decode: store decoded JPEG
+                        frames (much larger and slower); off: no video
+  --scale SCALE         with --video decode: downscale the stored frames (1 =
+                        full size, the default)
+  --frames {unified,raw}
+                        unified: z-up world, device and camera optical frames
+                        (default); raw: ARKit y-up world
+  --model MODEL         phone model for camera offsets when a file has no
+                        /device topic, e.g. "iPhone18,1"
+  --force               convert again even when the .rrd is newer than the
+                        .mcap
+  -j JOBS, --jobs JOBS  files converted in parallel (default: half the CPU
+                        cores)
+  -y, --yes             do not ask before converting
+  --name NAME           dataset name shown in the viewer (default: the folder
+                        name)
+  --port PORT           port of the local dataset server (default: a free one)
+  --no-viewer           only run the dataset server; connect a viewer yourself
 ```
 
 ## imuninn record
@@ -98,16 +188,17 @@ usage: imuninn record [-h] [--start] [-o OUTPUT] [--streams STREAMS] [--depth]
                       [target]
 
 positional arguments:
-  target               phone name, host, or host:port (default: first phone
-                       found)
+  target                phone name, host, or host:port (default: first phone
+                        found)
 
 options:
-  -h, --help           show this help message and exit
-  --start              send SessionControl START after connect
-  -o, --output OUTPUT  output .mcap (default: imuninn-<time>.mcap)
-  --streams STREAMS    comma-separated stream ids (default: all)
-  --depth              enable the depth stream before recording
-  --audio              enable the microphone (audio) stream before recording
+  -h, --help            show this help message and exit
+  --start               send SessionControl START after connect
+  -o OUTPUT, --output OUTPUT
+                        output .mcap (default: imuninn-<time>.mcap)
+  --streams STREAMS     comma-separated stream ids (default: all)
+  --depth               enable the depth stream before recording
+  --audio               enable the microphone (audio) stream before recording
 ```
 
 ## imuninn convert
@@ -115,14 +206,16 @@ options:
 convert a phone-side .imuninn recording to MCAP
 
 ```
-usage: imuninn convert [-h] [-o OUTPUT] input
+usage: imuninn convert [-h] [-o OUTPUT] [--model MODEL] input
 
 positional arguments:
   input
 
 options:
-  -h, --help           show this help message and exit
-  -o, --output OUTPUT
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+  --model MODEL         phone model stored in the file for camera offsets,
+                        e.g. "iPhone18,1" or "iPhone 17 Pro"
 ```
 
 ## imuninn web
@@ -153,10 +246,11 @@ positional arguments:
   input
 
 options:
-  -h, --help           show this help message and exit
-  -o, --output OUTPUT  output .wav (default: <input>.wav)
-  --no-fill            do not insert silence for missing chunks (the WAV then
-                       drifts from the device clock)
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        output .wav (default: <input>.wav)
+  --no-fill             do not insert silence for missing chunks (the WAV then
+                        drifts from the device clock)
 ```
 
 ## imuninn info
@@ -171,6 +265,72 @@ positional arguments:
 
 options:
   -h, --help  show this help message and exit
+```
+
+## imuninn hardware
+
+iPhone hardware constants: body size, camera / MagSafe frames (no phone needed)
+
+```
+usage: imuninn hardware [-h] {list,show,export} ...
+
+positional arguments:
+  {list,show,export}
+    list              models in the packaged dataset, with their hardware
+                      identifiers
+    show              one model's frames (device_tf_<frame>, metres) and
+                      cameras
+    export            write a URDF / MJCF / glTF (.glb) model with every frame
+                      (glb needs imuninn[models])
+
+options:
+  -h, --help          show this help message and exit
+```
+
+### imuninn hardware list
+
+```
+usage: imuninn hardware list [-h]
+
+options:
+  -h, --help  show this help message and exit
+```
+
+### imuninn hardware show
+
+```
+usage: imuninn hardware show [-h] [--json] [--mm] model
+
+positional arguments:
+  model       name or identifier, e.g. "iPhone 17 Pro" or "iPhone18,1"
+
+options:
+  -h, --help  show this help message and exit
+  --json      print JSON (metres, 4x4 matrices)
+  --mm        print the dataset entry as packaged (millimetres, drawing notes)
+              as JSON
+```
+
+### imuninn hardware export
+
+```
+usage: imuninn hardware export [-h] [--format {urdf,mjcf,glb,all}] [-o OUTPUT]
+                               [--all] [--prefix PREFIX]
+                               [model]
+
+positional arguments:
+  model                 name or identifier, e.g. "iPhone 17 Pro"; omit with
+                        --all
+
+options:
+  -h, --help            show this help message and exit
+  --format {urdf,mjcf,glb,all}
+                        all (with --all): every format into <output>/<format>/
+                        plus a manifest.json
+  -o OUTPUT, --output OUTPUT
+                        output file or directory (default: current directory)
+  --all                 every model in the dataset into the output directory
+  --prefix PREFIX       prefix for link / site names (urdf, mjcf), e.g. phone_
 ```
 
 ## imuninn profile
@@ -212,8 +372,8 @@ positional arguments:
   target
 
 options:
-  -h, --help           show this help message and exit
-  -o, --output OUTPUT
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
 ```
 
 ### imuninn profile list

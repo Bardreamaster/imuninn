@@ -1,0 +1,4242 @@
+{
+ "format": 1,
+ "frame_convention": 1,
+ "units": "mm",
+ "source": "iphone-frames dataset: Apple Accessory Design Guidelines dimensional drawings (each model's drawing.url); values extracted automatically, then checked by a person model by model (each model's review.dimensions)",
+ "frame_names": "protocol/frames/convention.json",
+ "models": {
+  "iphone-12": {
+   "name": "iPhone 12",
+   "identifiers": [
+    "iPhone13,2"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.39
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 0.73,
+    "camera_glass": 1.51
+   },
+   "drawing": {
+    "file": "iphone-12.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-12.pdf",
+    "sheet_date": "2020-10-16"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.39],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [23.03, 60.625, -8.9],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (131 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [23.03, 46.345, -8.9],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (82 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.0, 67.885, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 33.36 x 5.70, R2.85, centred u 35.76, v 5.47; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~14 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 12.1,
+     "keepout_cone_deg": 131,
+     "keepout_cone_base": [23.03, 60.625, -6.33],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (131 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 12.1,
+     "keepout_cone_deg": 82,
+     "keepout_cone_base": [23.03, 46.345, -5.01],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (82 deg, section F-F)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [10.48, 53.485, -8.12],
+     "diameter": 5.66
+    },
+    "rear_mic": {
+     "position_in_body": [10.48, 61.075, -8.12],
+     "diameter": 2.4
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-12-mini": {
+   "name": "iPhone 12 mini",
+   "identifiers": [
+    "iPhone13,1"
+   ],
+   "outline": {
+    "width": 64.21,
+    "height": 131.5,
+    "thickness": 7.39
+   },
+   "display_active_area": {
+    "width": 57.67,
+    "height": 124.96,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 0.73,
+    "camera_glass": 1.51
+   },
+   "drawing": {
+    "file": "iphone-12-mini.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-12-mini.pdf",
+    "sheet_date": "2020-10-16"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.01, -7.39],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.435, 55.08, -8.9],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (131 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.435, 40.8, -8.9],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (82 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.005, 60.43, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 33.36 x 5.70, R2.85, centred u 32.11, v 5.32; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~14 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 12.1,
+     "keepout_cone_deg": 131,
+     "keepout_cone_base": [21.435, 55.08, -6.2],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (131 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 12.1,
+     "keepout_cone_deg": 82,
+     "keepout_cone_base": [21.435, 40.8, -5.01],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (82 deg, section F-F)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [9.895, 47.94, -8.12],
+     "diameter": 5.66
+    },
+    "rear_mic": {
+     "position_in_body": [9.895, 55.53, -8.12],
+     "diameter": 2.4
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-12-pro": {
+   "name": "iPhone 12 Pro",
+   "identifiers": [
+    "iPhone13,3"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.39
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 0.94,
+    "camera_glass": 1.72
+   },
+   "drawing": {
+    "file": "iphone-12-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-12-pro.pdf",
+    "sheet_date": "2020-10-16"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.39],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [23.6, 61.195, -9.11],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 82 deg keep-out cone (section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [23.6, 45.775, -9.11],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (47 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [10.25, 53.485, -9.11],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (130 deg, section H-H)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.0, 67.885, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 33.36 x 5.70, R2.85, centred u 35.76, v 5.47; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~14 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 12.45,
+     "keepout_cone_deg": 82,
+     "keepout_cone_base": [23.6, 61.195, -5.51],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: 82 deg keep-out cone (section F-F)"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 12.45,
+     "keepout_cone_deg": 47,
+     "keepout_cone_base": [23.6, 45.775, -3.13],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrowest keep-out cone (47 deg, section F-F)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 12.45,
+     "keepout_cone_deg": 130,
+     "keepout_cone_base": [10.25, 53.485, -6.77],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (130 deg, section H-H)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [10.25, 64.185, -8.33],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [5.53, 45.975, -8.33],
+     "diameter": 1.15
+    },
+    "lidar": {
+     "position_in_body": [10.25, 42.905, -8.33],
+     "width": 4.55,
+     "height": 7.55,
+     "keepout_cone_deg": 80,
+     "note": "drawing calls it REAR CAMERA 4; keep-out on the plateau (detail J), not the sensor window"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-12-pro-max": {
+   "name": "iPhone 12 Pro Max",
+   "identifiers": [
+    "iPhone13,4"
+   ],
+   "outline": {
+    "width": 78.07,
+    "height": 160.84,
+    "thickness": 7.39
+   },
+   "display_active_area": {
+    "width": 71.13,
+    "height": 153.9,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.26,
+    "camera_glass": 2.79
+   },
+   "drawing": {
+    "file": "iphone-12-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-12-pro-max.pdf",
+    "sheet_date": "2020-10-16"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.0, -7.39],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [25.605, 66.99, -10.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (39 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [25.605, 49.52, -10.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 82 deg keep-out cone (section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [10.475, 58.26, -10.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (130 deg, section H-H)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.005, 75.06, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 33.36 x 5.70, R2.85, centred u 39.04, v 5.36; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~14 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 14.11,
+     "keepout_cone_deg": 39,
+     "keepout_cone_base": [25.605, 66.99, -1.59],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: narrowest keep-out cone (39 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 14.11,
+     "keepout_cone_deg": 82,
+     "keepout_cone_base": [25.605, 49.52, -5.91],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 82 deg keep-out cone (section F-F)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 14.11,
+     "keepout_cone_deg": 130,
+     "keepout_cone_base": [10.475, 58.26, -7.66],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (130 deg, section H-H)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [10.475, 70.31, -8.65],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [5.345, 49.53, -8.65],
+     "diameter": 1.15
+    },
+    "lidar": {
+     "position_in_body": [10.475, 46.25, -8.65],
+     "width": 5.09,
+     "height": 8.09,
+     "keepout_cone_deg": 80,
+     "note": "drawing calls it REAR CAMERA 4; keep-out on the plateau (detail J), not the sensor window"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-13": {
+   "name": "iPhone 13",
+   "identifiers": [
+    "iPhone14,5"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.7,
+    "thickness": 7.65
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47,
+    "note": "\"3.47 ALL AROUND\" as printed (146.70 - 139.77 leaves 3.465 per side)"
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.5,
+    "camera_glass": 2.59
+   },
+   "drawing": {
+    "file": "iphone-13.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-13.pdf",
+    "sheet_date": "2021-09-28"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.65],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [23.88, 61.475, -10.24],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (124 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [11.52, 49.115, -10.24],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (83 deg, section H-H)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.0, 67.765, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 35.76, v 5.59; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 13.69,
+     "keepout_cone_deg": 124,
+     "keepout_cone_base": [23.88, 61.475, -7.81],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (124 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 13.69,
+     "keepout_cone_deg": 83,
+     "keepout_cone_base": [11.52, 49.115, -6.33],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (83 deg, section H-H)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [9.65, 63.345, -9.15],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [25.33, 47.665, -9.15],
+     "diameter": 2.4
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-13-mini": {
+   "name": "iPhone 13 mini",
+   "identifiers": [
+    "iPhone14,4"
+   ],
+   "outline": {
+    "width": 64.21,
+    "height": 131.5,
+    "thickness": 7.65
+   },
+   "display_active_area": {
+    "width": 57.67,
+    "height": 124.96,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.48,
+    "camera_glass": 2.51
+   },
+   "drawing": {
+    "file": "iphone-13-mini.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-13-mini.pdf",
+    "sheet_date": "2021-09-28"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.01, -7.65],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.255, 54.9, -10.16],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (124 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [8.895, 42.54, -10.16],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (83 deg, section G-G; the cone callout there is mislabelled REAR CAMERA 1)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.005, 60.16, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.68, R2.84, centred u 32.11, v 5.59; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 13.69,
+     "keepout_cone_deg": 124,
+     "keepout_cone_base": [21.255, 54.9, -7.81],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (124 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 13.69,
+     "keepout_cone_deg": 83,
+     "keepout_cone_base": [8.895, 42.54, -6.33],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (83 deg, section G-G; the cone callout there is mislabelled REAR CAMERA 1)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [7.205, 56.77, -9.13],
+     "diameter": 6.28,
+     "note": "u not dimensioned on the drawing; scaled from detail Y (about ±0.3 mm)"
+    },
+    "rear_mic": {
+     "position_in_body": [22.705, 41.09, -9.13],
+     "diameter": 2.4
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-13-pro": {
+   "name": "iPhone 13 Pro",
+   "identifiers": [
+    "iPhone14,2"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.65
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.68,
+    "camera_glass": 3.6
+   },
+   "drawing": {
+    "file": "iphone-13-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-13-pro.pdf",
+    "sheet_date": "2021-09-28"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.65],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [22.33, 59.925, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (37 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [22.33, 42.005, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 85 deg keep-out cone (section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [5.68, 50.965, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (123 deg, section G-G; the depth callout there is mislabelled REAR CAMERA 1)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.0, 67.765, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 35.76, v 5.59; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 15.53,
+     "keepout_cone_deg": 37,
+     "keepout_cone_base": [22.33, 59.925, -2.96],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: narrowest keep-out cone (37 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.53,
+     "keepout_cone_deg": 85,
+     "keepout_cone_base": [22.33, 42.005, -7.27],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 85 deg keep-out cone (section F-F)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.8,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [5.68, 50.965, -6.69],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (123 deg, section G-G; the depth callout there is mislabelled REAR CAMERA 1)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [5.68, 63.935, -9.33]
+    },
+    "lidar": {
+     "position_in_body": [5.68, 38.005, -9.33],
+     "width": 4.06,
+     "height": 7.06,
+     "keepout_cone_deg": 77,
+     "note": "rear-sensor keep-out on the plateau (detail H), not the sensor window; u assumed on the 30.08 line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-13-pro-max": {
+   "name": "iPhone 13 Pro Max",
+   "identifiers": [
+    "iPhone14,3"
+   ],
+   "outline": {
+    "width": 78.07,
+    "height": 160.84,
+    "thickness": 7.65
+   },
+   "display_active_area": {
+    "width": 71.13,
+    "height": 153.9,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.68,
+    "camera_glass": 3.6
+   },
+   "drawing": {
+    "file": "iphone-13-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-13-pro-max.pdf",
+    "sheet_date": "2021-09-28"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.0, -7.65],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [25.605, 66.99, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (37 deg, section F-F)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [25.605, 49.07, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 85 deg keep-out cone (section F-F)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [8.955, 58.03, -11.25],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (123 deg, section H-H)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.005, 74.83, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.68, R2.84, centred u 39.04, v 5.59; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 15.53,
+     "keepout_cone_deg": 37,
+     "keepout_cone_base": [25.605, 66.99, -3.1],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: narrowest keep-out cone (37 deg, section F-F)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.53,
+     "keepout_cone_deg": 85,
+     "keepout_cone_base": [25.605, 49.07, -7.27],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 85 deg keep-out cone (section F-F)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.53,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [8.955, 58.03, -6.67],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (123 deg, section H-H)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [8.955, 71.0, -9.33],
+     "diameter": 6.28
+    },
+    "lidar": {
+     "position_in_body": [8.955, 45.07, -9.33],
+     "width": 4.06,
+     "height": 7.06,
+     "keepout_cone_deg": 77,
+     "note": "rear-sensor keep-out on the plateau (detail J), not the sensor window; u assumed on the 30.08 line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-14": {
+   "name": "iPhone 14",
+   "identifiers": [
+    "iPhone14,7"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.8
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.42
+   },
+   "drawing": {
+    "file": "iphone-14.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-14.pdf",
+    "sheet_date": "2022-09-21"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.8],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [23.88, 61.475, -11.22],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (132.87 deg, section L-L)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [11.13, 48.725, -11.22],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (81.99 deg, section M-M)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.0, 68.035, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 35.76, v 5.32; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 14.38,
+     "keepout_cone_deg": 132.87,
+     "keepout_cone_base": [23.88, 61.475, -8.48],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (132.87 deg, section L-L)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 14.38,
+     "keepout_cone_deg": 81.99,
+     "keepout_cone_base": [11.13, 48.725, -8.75],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (81.99 deg, section M-M)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [9.46, 63.145, -9.65],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [25.14, 47.465, -9.65],
+     "diameter": 2.1
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-14-plus": {
+   "name": "iPhone 14 Plus",
+   "identifiers": [
+    "iPhone14,8"
+   ],
+   "outline": {
+    "width": 78.07,
+    "height": 160.84,
+    "thickness": 7.8
+   },
+   "display_active_area": {
+    "width": 71.13,
+    "height": 153.9,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.42
+   },
+   "drawing": {
+    "file": "iphone-14-plus.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-14-plus.pdf",
+    "sheet_date": "2022-09-21"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.0, -7.8],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [26.485, 67.87, -11.22],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (129.61 deg, section L-L)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [13.735, 55.12, -11.22],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (80.25 deg, section M-M)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.005, 75.1, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 39.04, v 5.32; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 14.38,
+     "keepout_cone_deg": 129.61,
+     "keepout_cone_base": [26.485, 67.87, -8.51],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (129.61 deg, section L-L)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 14.38,
+     "keepout_cone_deg": 80.25,
+     "keepout_cone_base": [13.735, 55.12, -8.76],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (80.25 deg, section M-M)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [12.065, 69.55, -9.65],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [27.745, 53.86, -9.65],
+     "diameter": 2.1
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-14-pro": {
+   "name": "iPhone 14 Pro",
+   "identifiers": [
+    "iPhone15,2"
+   ],
+   "outline": {
+    "width": 71.45,
+    "height": 147.46,
+    "thickness": 7.85
+   },
+   "display_active_area": {
+    "width": 65.08,
+    "height": 141.09,
+    "left": 3.19,
+    "top": 3.19
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 4.18
+   },
+   "drawing": {
+    "file": "iphone-14-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-14-pro.pdf",
+    "sheet_date": "2022-09-21"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.01, -1.665, -7.85],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [21.44, 59.455, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (38.23 deg, section G-G)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.44, 40.215, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 88.90 deg keep-out cone (section G-G)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [3.6, 49.835, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (127.74 deg, section J-J)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.31, 65.635, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.56) of the front-camera keep-out pill (19.74 x 5.12, centred on u 35.73, centre line v 8.10; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 38.23,
+     "keepout_cone_base": [21.44, 59.455, -4.02],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: narrowest keep-out cone (38.23 deg, section G-G)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 88.9,
+     "keepout_cone_base": [21.44, 40.215, -7.84],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 88.90 deg keep-out cone (section G-G)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 127.74,
+     "keepout_cone_base": [3.6, 49.835, -7.99],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (127.74 deg, section J-J)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [3.6, 63.415, -9.7],
+     "diameter": 6.9
+    },
+    "lidar": {
+     "position_in_body": [3.6, 36.235, -9.7],
+     "width": 4.92,
+     "height": 8.96,
+     "keepout_cone_deg": 62.08,
+     "note": "rear-sensor keep-out rectangle on the plateau (4.92 x 8.96), not the sensor window; u assumed on the 32.12 section line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-14-pro-max": {
+   "name": "iPhone 14 Pro Max",
+   "identifiers": [
+    "iPhone15,3"
+   ],
+   "outline": {
+    "width": 77.58,
+    "height": 160.71,
+    "thickness": 7.85
+   },
+   "display_active_area": {
+    "width": 71.21,
+    "height": 154.34,
+    "left": 3.19,
+    "top": 3.19
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 4.18
+   },
+   "drawing": {
+    "file": "iphone-14-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-14-pro-max.pdf",
+    "sheet_date": "2022-09-21"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.0, -7.85],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, centre of the Ø57.50 \"do not obstruct\" circle (printed as PRODUCT CENTER)",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [24.505, 66.08, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (38.23 deg, section G-G)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [24.505, 46.84, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 88.90 deg keep-out cone (section G-G)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [6.665, 56.46, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (125.12 deg, section J-J)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.325, 72.26, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.56) of the front-camera keep-out pill (19.79 x 5.12, centred on u 38.79, centre line v 8.10; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 38.23,
+     "keepout_cone_base": [24.505, 66.08, -4.12],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: narrowest keep-out cone (38.23 deg, section G-G)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 88.9,
+     "keepout_cone_base": [24.505, 46.84, -7.8],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 88.90 deg keep-out cone (section G-G)"
+    },
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.61,
+     "keepout_cone_deg": 125.12,
+     "keepout_cone_base": [6.665, 56.46, -8.09],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: widest keep-out cone (125.12 deg, section J-J)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [6.665, 70.04, -9.7],
+     "diameter": 6.9
+    },
+    "lidar": {
+     "position_in_body": [6.665, 42.86, -9.7],
+     "width": 4.78,
+     "height": 8.82,
+     "keepout_cone_deg": 62.08,
+     "note": "rear-sensor keep-out rectangle on the plateau, not the sensor window; u assumed on the 32.12 section line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-15": {
+   "name": "iPhone 15",
+   "identifiers": [
+    "iPhone15,4"
+   ],
+   "outline": {
+    "width": 71.63,
+    "height": 147.64,
+    "thickness": 7.81
+   },
+   "display_active_area": {
+    "width": 65.08,
+    "height": 141.09,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.48
+   },
+   "drawing": {
+    "file": "iphone-15.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-15.pdf",
+    "sheet_date": "2023-10-10"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.01, -0.005, -7.81],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [23.09, 61.085, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (121.83 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [10.18, 48.175, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (75.55 deg)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.34, 65.645, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.56) of the front-camera keep-out pill (19.79 x 5.12, centred on u 35.81, centre line v 8.17; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.07,
+     "keepout_cone_deg": 121.83,
+     "keepout_cone_base": [23.09, 61.085, -9.11],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (121.83 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.07,
+     "keepout_cone_deg": 75.55,
+     "keepout_cone_base": [10.18, 48.175, -6.9],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (75.55 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [8.5, 62.755, -9.66],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [24.35, 46.915, -9.66],
+     "diameter": 2.1
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-15-plus": {
+   "name": "iPhone 15 Plus",
+   "identifiers": [
+    "iPhone15,5"
+   ],
+   "outline": {
+    "width": 77.76,
+    "height": 160.89,
+    "thickness": 7.81
+   },
+   "display_active_area": {
+    "width": 71.21,
+    "height": 154.34,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.48
+   },
+   "drawing": {
+    "file": "iphone-15-plus.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-15-plus.pdf",
+    "sheet_date": "2023-10-10"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, 0.0, -7.81],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [26.155, 67.71, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (121.83 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [13.245, 54.8, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (75.55 deg)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.345, 72.27, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.56) of the front-camera keep-out pill (19.79 x 5.12, centred on u 38.88, centre line v 8.17; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 15.07,
+     "keepout_cone_deg": 121.83,
+     "keepout_cone_base": [26.155, 67.71, -9.11],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (121.83 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.07,
+     "keepout_cone_deg": 75.55,
+     "keepout_cone_base": [13.245, 54.8, -6.9],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (75.55 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [11.565, 69.38, -9.66],
+     "diameter": 6.28
+    },
+    "rear_mic": {
+     "position_in_body": [27.415, 53.54, -9.66],
+     "diameter": 2.1
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-15-pro": {
+   "name": "iPhone 15 Pro",
+   "identifiers": [
+    "iPhone16,1"
+   ],
+   "outline": {
+    "width": 70.6,
+    "height": 146.61,
+    "thickness": 8.25
+   },
+   "display_active_area": {
+    "width": 65.08,
+    "height": 141.09,
+    "left": 2.76,
+    "top": 2.76
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.05,
+    "camera_glass": 3.78
+   },
+   "drawing": {
+    "file": "iphone-15-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-15-pro.pdf",
+    "sheet_date": "2023-10-10"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, -1.675, -8.25],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.13, 59.135, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (123 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.13, 39.895, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 86 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [3.14, 49.515, -12.03],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (33.2 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.31, 65.625, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.705) of the front-camera keep-out pill (20.03 x 5.41, centred on u 35.30, centre line v 7.68; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [21.13, 59.135, -8.29],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (123 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 86,
+     "keepout_cone_base": [21.13, 39.895, -7.59],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 86 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 33.2,
+     "keepout_cone_base": [3.14, 49.515, -3.51],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (33.2 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [3.14, 63.085, -10.3],
+     "diameter": 6.92
+    },
+    "lidar": {
+     "position_in_body": [3.14, 34.485, -10.3],
+     "diameter": 14.37,
+     "keepout_cone_deg": 80.75,
+     "cone_base_from_cover_glass": 5.89,
+     "note": "Ø14.37 is the keep-out circle on the plateau, not the sensor window; u assumed on the 32.16 line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-15-pro-max": {
+   "name": "iPhone 15 Pro Max",
+   "identifiers": [
+    "iPhone16,2"
+   ],
+   "outline": {
+    "width": 76.73,
+    "height": 159.86,
+    "thickness": 8.25
+   },
+   "display_active_area": {
+    "width": 71.21,
+    "height": 154.34,
+    "left": 2.76,
+    "top": 2.76
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.05,
+    "camera_glass": 4.07
+   },
+   "drawing": {
+    "file": "iphone-15-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-15-pro-max.pdf",
+    "sheet_date": "2023-10-10"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, 0.0, -8.25],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [24.195, 65.76, -12.32],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (123 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [24.195, 46.52, -12.32],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 86 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [6.205, 56.14, -12.32],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (24.1 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.335, 72.26, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.69) of the front-camera keep-out pill (20.03 x 5.41, centred on u 38.37, centre line v 7.67; sheet 2 detail E). The drawing does not mark the camera itself; the keep-out cone base is on the cover glass.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [24.195, 65.76, -8.28],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (123 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 86,
+     "keepout_cone_base": [24.195, 46.52, -7.73],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 86 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 24.1,
+     "keepout_cone_base": [6.205, 56.14, -4.6],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (24.1 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [6.205, 69.71, -10.3],
+     "diameter": 6.9
+    },
+    "lidar": {
+     "position_in_body": [6.205, 41.71, -10.3],
+     "diameter": 14.62,
+     "keepout_cone_deg": 80.75,
+     "note": "Ø14.62 is the keep-out circle on the plateau, not the sensor window; u assumed on the 32.16 line"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-16": {
+   "name": "iPhone 16",
+   "identifiers": [
+    "iPhone17,3"
+   ],
+   "outline": {
+    "width": 71.63,
+    "height": 147.64,
+    "thickness": 7.81
+   },
+   "display_active_area": {
+    "width": 65.08,
+    "height": 141.09,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.48
+   },
+   "drawing": {
+    "file": "iphone-16.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-16.pdf",
+    "sheet_date": "2024-09-19"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.01, -0.005, -7.81],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [22.2, 60.195, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (123 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [22.2, 42.475, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.7, 65.635, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 20.75, centred on u 35.81, centre line v 8.18; sheet 3 detail O). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [22.2, 60.195, -8.33],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (123 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 84,
+     "keepout_cone_base": [22.2, 42.475, -6.9],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.7, 65.635, -1.98]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [5.81, 51.335, -9.66],
+     "diameter": 6.28
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-16-plus": {
+   "name": "iPhone 16 Plus",
+   "identifiers": [
+    "iPhone17,4"
+   ],
+   "outline": {
+    "width": 77.76,
+    "height": 160.88,
+    "thickness": 7.81
+   },
+   "display_active_area": {
+    "width": 71.21,
+    "height": 154.34,
+    "left": 3.27,
+    "top": 3.27
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.85,
+    "camera_glass": 3.48
+   },
+   "drawing": {
+    "file": "iphone-16-plus.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-16-plus.pdf",
+    "sheet_date": "2024-09-19"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, 0.0, -7.81],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [25.265, 66.82, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (123 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [25.265, 49.1, -11.29],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.705, 72.26, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 20.75, centred on u 38.88, centre line v 8.18; sheet 3 detail O). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [25.265, 66.82, -8.33],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (123 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 84,
+     "keepout_cone_base": [25.265, 49.1, -6.9],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.705, 72.26, -2.65]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [8.875, 57.96, -9.66],
+     "diameter": 6.29
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-16-pro": {
+   "name": "iPhone 16 Pro",
+   "identifiers": [
+    "iPhone17,1"
+   ],
+   "outline": {
+    "width": 71.45,
+    "height": 149.61,
+    "thickness": 8.25
+   },
+   "display_active_area": {
+    "width": 66.57,
+    "height": 144.79,
+    "left": 2.44,
+    "top": 2.41,
+    "note": "sheet says \"all around 2.44\" but 149.61 - 144.79 gives 2.41 top/bottom; centred value used"
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.05,
+    "camera_glass": 4.28
+   },
+   "drawing": {
+    "file": "iphone-16-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-16-pro.pdf",
+    "sheet_date": "2024-09-19"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, -0.245, -8.25],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø57.50 circle centred on the marked PRODUCT CENTER (printed 75.05, although 149.61/2 = 74.81)",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.555, 60.635, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (124 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.555, 41.395, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 86 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [3.545, 51.015, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (25 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.315, 67.015, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 19.74, centred on u 35.72, centre line v 7.79; sheet 3 detail O). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 124,
+     "keepout_cone_base": [21.555, 60.635, -8.52],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (124 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 86,
+     "keepout_cone_base": [21.555, 41.395, -7.97],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 86 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 25,
+     "keepout_cone_base": [3.545, 51.015, -7.23],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (25 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.315, 67.015, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [3.545, 64.585, -10.3],
+     "diameter": 6.92
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-16-pro-max": {
+   "name": "iPhone 16 Pro Max",
+   "identifiers": [
+    "iPhone17,2"
+   ],
+   "outline": {
+    "width": 77.58,
+    "height": 163.03,
+    "thickness": 8.25
+   },
+   "display_active_area": {
+    "width": 72.86,
+    "height": 158.31,
+    "left": 2.36,
+    "top": 2.36
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.05,
+    "camera_glass": 4.28
+   },
+   "drawing": {
+    "file": "iphone-16-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-16-pro-max.pdf",
+    "sheet_date": "2024-09-19"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, -0.245, -8.25],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø57.50 circle centred on the marked PRODUCT CENTER (printed 81.76, although 163.03/2 = 81.52)",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [24.62, 67.345, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (124 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [24.62, 48.105, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 86 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [6.61, 57.725, -12.53],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (25 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.32, 73.795, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 19.74, centred on u 38.79, centre line v 7.72; sheet 3 detail O). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 124,
+     "keepout_cone_base": [24.62, 67.345, -8.52],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (124 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 86,
+     "keepout_cone_base": [24.62, 48.105, -7.97],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 86 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 25,
+     "keepout_cone_base": [6.61, 57.725, -7.23],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (25 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.32, 73.795, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [6.61, 71.295, -10.3],
+     "diameter": 6.92
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-16e": {
+   "name": "iPhone 16e",
+   "identifiers": [
+    "iPhone17,5"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.8
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": null,
+    "camera_glass": 1.68
+   },
+   "drawing": {
+    "file": "iphone-16e.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-16e.pdf",
+    "sheet_date": "2025-03-17"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.8],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "iPhone 16e has no MagSafe magnets; this circle is the wireless-charging keep-out (no metal), used here as the back-centre reference.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [22.44, 60.035, -9.48],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "drawing",
+     "role_basis": "only rear camera",
+     "drawing_label": "REAR CAMERA",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.17, 68.035, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 35.93, v 5.32; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 14.97,
+     "keepout_cone_deg": 82,
+     "drawing_label": "REAR CAMERA",
+     "role_basis": "only rear camera"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [6.08, 60.035, -7.8],
+     "diameter": 3.75
+    },
+    "rear_mic": {
+     "position_in_body": [11.46, 60.035, -7.8],
+     "diameter": 1.3
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-17": {
+   "name": "iPhone 17",
+   "identifiers": [
+    "iPhone18,3"
+   ],
+   "outline": {
+    "width": 71.45,
+    "height": 149.61,
+    "thickness": 7.95
+   },
+   "display_active_area": {
+    "width": 66.57,
+    "height": 144.79,
+    "left": 2.44,
+    "top": 2.41,
+    "note": "sheet says \"all around 2.44\" but 149.61 - 144.79 gives 2.41 top/bottom; centred value used"
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 1.78,
+    "camera_glass": 3.45
+   },
+   "drawing": {
+    "file": "iphone-17.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17.pdf",
+    "sheet_date": "2025-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, -0.005, -7.95],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [22.105, 61.185, -11.4],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (123 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [22.105, 43.465, -11.4],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.825, 67.015, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 20.75, centred on u 35.72, centre line v 7.79; sheet 3 detail O). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [22.105, 61.185, -8.44],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (123 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.0,
+     "keepout_cone_deg": 84,
+     "keepout_cone_base": [22.105, 43.465, -7.01],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (84 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.825, 67.015, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [5.315, 52.325, -9.73],
+     "diameter": 6.28
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-17-pro": {
+   "name": "iPhone 17 Pro",
+   "identifiers": [
+    "iPhone18,1"
+   ],
+   "outline": {
+    "width": 71.85,
+    "height": 150.01,
+    "thickness": 8.75
+   },
+   "display_active_area": {
+    "width": 66.57,
+    "height": 144.73,
+    "left": 2.64,
+    "top": 2.64
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.55,
+    "camera_glass": 4.43
+   },
+   "drawing": {
+    "file": "iphone-17-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17-pro.pdf",
+    "sheet_date": "2025-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, -2.735, -8.75],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.555, 60.635, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (125 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.555, 41.395, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 90 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [3.565, 51.015, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.335, 67.015, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera/sensor keep-out pill (u 26.07..45.81, centre line v 7.99, sheet 3 detail M; end-cap centres from the PDF vector arcs). The drawing does not mark the camera itself; on Dynamic Island iPhones the camera is the right end.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 125,
+     "keepout_cone_base": [21.555, 60.635, -10.21],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (125 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 90,
+     "keepout_cone_base": [21.555, 41.395, -8.86],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 90 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 34,
+     "keepout_cone_base": [3.565, 51.015, -8.02],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.335, 67.015, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-22.105, 61.185, -11.3],
+     "diameter": 6.8
+    },
+    "rear_mic": {
+     "position_in_body": [-22.105, 51.015, -11.3],
+     "diameter": 1.05
+    },
+    "lidar": {
+     "position_in_body": [-22.105, 40.845, -11.3],
+     "diameter": 6.65,
+     "keepout_cone_deg": 84,
+     "cone_base_from_cover_glass": 10.28
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-17-pro-max": {
+   "name": "iPhone 17 Pro Max",
+   "identifiers": [
+    "iPhone18,2"
+   ],
+   "outline": {
+    "width": 77.98,
+    "height": 163.43,
+    "thickness": 8.75
+   },
+   "display_active_area": {
+    "width": 72.86,
+    "height": 158.31,
+    "left": 2.56,
+    "top": 2.56
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.55,
+    "camera_glass": 4.43
+   },
+   "drawing": {
+    "file": "iphone-17-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17-pro-max.pdf",
+    "sheet_date": "2025-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -8.75],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [24.62, 67.345, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (125 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [24.62, 48.105, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 90 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [6.63, 57.725, -13.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.32, 73.805, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera/sensor keep-out pill (length 19.74, centred on u 38.99, centre line v 7.91; sheet 3 detail M).",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 125,
+     "keepout_cone_base": [24.62, 67.345, -10.21],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (125 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 90,
+     "keepout_cone_base": [24.62, 48.105, -8.85],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 90 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 34,
+     "keepout_cone_base": [6.63, 57.725, -8.02],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.32, 73.805, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-25.17, 67.895, -11.3],
+     "diameter": 6.8
+    },
+    "rear_mic": {
+     "position_in_body": [-25.17, 57.725, -11.3],
+     "diameter": 1.15
+    },
+    "lidar": {
+     "position_in_body": [-25.17, 47.555, -11.3],
+     "diameter": 6.65,
+     "keepout_cone_deg": 84,
+     "cone_base_from_cover_glass": 10.28
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-17e": {
+   "name": "iPhone 17e",
+   "identifiers": [
+    "iPhone18,5"
+   ],
+   "outline": {
+    "width": 71.52,
+    "height": 146.71,
+    "thickness": 7.8
+   },
+   "display_active_area": {
+    "width": 64.58,
+    "height": 139.77,
+    "left": 3.47,
+    "top": 3.47
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": null,
+    "camera_glass": 1.68
+   },
+   "drawing": {
+    "file": "iphone-17e.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-17e.pdf",
+    "sheet_date": "2026-03-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -7.8],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 2, Ø57.50 circle centred on the marked PRODUCT CENTER",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [22.44, 60.035, -9.48],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "drawing",
+     "role_basis": "only rear camera",
+     "drawing_label": "REAR CAMERA",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [0.17, 68.035, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated, notch model: centre of the front camera + Face ID keep-out zone (pill 25.36 x 5.70, R2.85, centred u 35.93, v 5.32; sheet 2 detail E). The camera sits somewhere inside this zone; Apple does not mark it, so this origin can be off by up to ~10 mm along X.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 14.97,
+     "keepout_cone_deg": 82,
+     "drawing_label": "REAR CAMERA",
+     "role_basis": "only rear camera"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front"
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [6.08, 60.035, -7.8],
+     "diameter": 3.75
+    },
+    "rear_mic": {
+     "position_in_body": [11.46, 60.035, -7.8],
+     "diameter": 1.3
+    }
+   },
+   "identifiers_note": "iPhone18,5 from community lists, not confirmed on a device",
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-18-pro": {
+   "name": "iPhone 18 Pro",
+   "identifiers": [],
+   "outline": {
+    "width": 71.85,
+    "height": 150.01,
+    "thickness": 8.75
+   },
+   "display_active_area": {
+    "width": 66.57,
+    "height": 144.73,
+    "left": 2.64,
+    "top": 2.64
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.78,
+    "camera_glass": 4.89
+   },
+   "drawing": {
+    "file": "iphone-18-pro.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-18-pro.pdf",
+    "sheet_date": "2026-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.005, -2.735, -8.75],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [21.555, 60.635, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (125 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.555, 41.395, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 90 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [3.435, 51.015, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [4.905, 67.015, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.93) of the front-camera keep-out pill (length 15.68, centred on u 35.92, centre line v 7.99; sheet 3 detail M). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 125,
+     "keepout_cone_base": [21.555, 60.635, -10.76],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (125 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 90,
+     "keepout_cone_base": [21.555, 41.395, -7.81],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 90 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 34,
+     "keepout_cone_base": [3.435, 51.015, -8.43],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [4.905, 67.015, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-22.105, 61.185, -11.53],
+     "diameter": 6.9
+    },
+    "rear_mic": {
+     "position_in_body": [-22.105, 51.015, -11.53],
+     "diameter": 1.15
+    },
+    "lidar": {
+     "position_in_body": [-22.105, 40.845, -11.53],
+     "diameter": 6.9,
+     "keepout_cone_deg": 84,
+     "cone_base_from_cover_glass": 10.28
+    },
+    "forward_facing_sensor": {
+     "position_in_body": [-21.855, 67.015, 0.0],
+     "radius": 1.84,
+     "note": "separate circular forward-facing sensor keep-out (sheet 3 detail M)"
+    }
+   },
+   "identifiers_note": "identifier not known yet",
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-18-pro-max": {
+   "name": "iPhone 18 Pro Max",
+   "identifiers": [],
+   "outline": {
+    "width": 77.98,
+    "height": 163.43,
+    "thickness": 8.75
+   },
+   "display_active_area": {
+    "width": 72.86,
+    "height": 158.31,
+    "left": 2.56,
+    "top": 2.56
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 2.78,
+    "camera_glass": 4.89
+   },
+   "drawing": {
+    "file": "iphone-18-pro-max.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-18-pro-max.pdf",
+    "sheet_date": "2026-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.0, 0.005, -8.75],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, centre of the Ø57.50 \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 57.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [24.62, 67.345, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: widest keep-out cone (125 deg)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [24.62, 48.105, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: 90 deg keep-out cone",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_telephoto_optical": {
+     "origin": [6.5, 57.725, -13.64],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)",
+     "drawing_label": "REAR CAMERA 3",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [4.91, 73.805, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.93) of the front-camera keep-out pill (length 15.68, centred on u 38.99, centre line v 7.91; sheet 3 detail M). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 125,
+     "keepout_cone_base": [24.62, 67.345, -10.76],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: widest keep-out cone (125 deg)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 90,
+     "keepout_cone_base": [24.62, 48.105, -7.81],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: 90 deg keep-out cone"
+    },
+    "telephoto": {
+     "frame": "cam_telephoto_optical",
+     "facing": "back",
+     "window_diameter": 16.58,
+     "keepout_cone_deg": 34,
+     "keepout_cone_base": [6.5, 57.725, -8.43],
+     "drawing_label": "REAR CAMERA 3",
+     "role_basis": "inferred: narrowest keep-out cone (34 deg)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [4.91, 73.805, -0.6]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-25.17, 67.895, -11.53],
+     "diameter": 6.9
+    },
+    "rear_mic": {
+     "position_in_body": [-25.17, 57.725, -11.53],
+     "diameter": 1.15
+    },
+    "lidar": {
+     "position_in_body": [-25.17, 47.555, -11.53],
+     "diameter": 6.8,
+     "keepout_cone_deg": 84,
+     "cone_base_from_cover_glass": 10.28
+    },
+    "forward_facing_sensor": {
+     "position_in_body": [-24.92, 73.805, 0.0],
+     "radius": 1.84,
+     "note": "separate circular forward-facing sensor keep-out (sheet 3 detail M)"
+    }
+   },
+   "identifiers_note": "identifier not known yet",
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-air": {
+   "name": "iPhone Air",
+   "identifiers": [
+    "iPhone18,4"
+   ],
+   "outline": {
+    "width": 74.7,
+    "height": 156.18,
+    "thickness": 5.64
+   },
+   "display_active_area": {
+    "width": 69.55,
+    "height": 151.03,
+    "left": 2.58,
+    "top": 2.58
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 3.03,
+    "camera_glass": 5.68
+   },
+   "drawing": {
+    "file": "iphone-air.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-air.pdf",
+    "sheet_date": "2025-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [-0.005, -0.245, -5.64],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 4, Ø61.50 circle centred on the marked PRODUCT CENTER (printed 78.34, although 156.18/2 = 78.09)",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 61.5,
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [21.055, 61.805, -11.32],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "drawing",
+     "role_basis": "only rear camera",
+     "drawing_label": "REAR CAMERA",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [7.315, 69.165, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "estimated",
+     "source": "estimated: centre of the right end cap (R2.55) of the front-camera keep-out pill (length 19.74, centred on u 37.35, centre line v 8.93; sheet 3 detail M). The drawing does not mark the camera itself.",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 15.82,
+     "keepout_cone_deg": 84,
+     "keepout_cone_base": [21.055, 61.805, -6.92],
+     "drawing_label": "REAR CAMERA",
+     "role_basis": "only rear camera"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [7.315, 69.165, -0.55]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-21.075, 61.805, -8.67],
+     "diameter": 6.3
+    },
+    "rear_mic": {
+     "position_in_body": [-13.995, 61.805, -8.67],
+     "diameter": 2.3
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-duo": {
+   "name": "iPhone Duo",
+   "identifiers": [],
+   "outline": {
+    "width": 84.1,
+    "height": 117.8,
+    "thickness": 11.3
+   },
+   "display_active_area": {
+    "width": 77.17,
+    "height": 112.28,
+    "left": 4.13,
+    "top": 2.71,
+    "note": "outer display. Printed margins: 4.13 hinge side (left), 2.71 \"all around\" the other three sides. 4.13 + 77.17 + 2.71 = 84.01 and 2.71 + 112.28 + 2.71 = 117.70, so the printed values leave about 0.1 mm unaccounted on the right and bottom; the origin may be off by about 0.05 mm."
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": 3.64,
+    "camera_glass": 5.72
+   },
+   "drawing": {
+    "file": "iphone-duo.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-duo.pdf",
+    "sheet_date": "2026-09-09"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.085, -2.46, -11.3],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 5, centre lines of the Ø61.50 MagSafe \"do not obstruct\" circle",
+     "note": "Keep-out circle centre; the drawing does not label it as the coil/magnet centre.",
+     "diameter": 61.5,
+     "verified": false
+    },
+    "cam_ultra_wide_optical": {
+     "origin": [26.135, 43.6, -17.02],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: wider keep-out cone (123 deg, section S-S)",
+     "drawing_label": "REAR CAMERA 1",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [8.405, 43.6, -17.02],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "role_inferred",
+     "role_basis": "inferred: narrower keep-out cone (84 deg, section V-V)",
+     "drawing_label": "REAR CAMERA 2",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [30.675, 48.23, 0.0],
+     "R": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "drawing",
+     "source": "sheet 1 / sheet 3 detail M: FRONT CAMERA centre on the outer display (Ø6.07 cut-out, Ø2.98 keep-out), marked directly; cone 88.50 deg, base 1.53 below the outer display (section P-P)",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "iPhone 17 generation front sensor; measured rotation_deg 90 on iPhone 17 Pro (2026-11-07), axes not yet checked against a target"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "ultra_wide": {
+     "frame": "cam_ultra_wide_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 123,
+     "keepout_cone_base": [26.135, 43.6, -13.99],
+     "drawing_label": "REAR CAMERA 1",
+     "role_basis": "inferred: wider keep-out cone (123 deg, section S-S)"
+    },
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 16.2,
+     "keepout_cone_deg": 84,
+     "keepout_cone_base": [8.405, 43.6, -12.55],
+     "drawing_label": "REAR CAMERA 2",
+     "role_basis": "inferred: narrower keep-out cone (84 deg, section V-V)"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [30.675, 48.23, -1.53]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [-8.195, 39.15, -14.94],
+     "diameter": 3.75
+    },
+    "rear_mic": {
+     "position_in_body": [-8.195, 47.9, -14.94],
+     "note": "slot, 3.32 long"
+    }
+   },
+   "identifiers_note": "identifier not known yet",
+   "notes": [
+    "Foldable: the six frames are defined for the folded phone (outer display = front). The unfolded inner display and its camera are recorded under unfolded, in drawing coordinates only."
+   ],
+   "unfolded": {
+    "outline": {
+     "width": 164.6,
+     "height": 117.8,
+     "datum": "sheet 4, 0.00 at the bottom-left corner of the unfolded inner face"
+    },
+    "inner_display_margin": 3.45,
+    "inner_front_camera": {
+     "u": 115.8,
+     "v_from_bottom": 107.25,
+     "keepout_diameter": 4.32,
+     "keepout_cone_deg": 97,
+     "cone_base_below_inner_display": 1.91,
+     "note": "u 115.80 is printed; v is read from the 108.43 / 107.25 / 106.02 callouts and may be off by about 1.2 mm"
+    }
+   },
+   "review": {
+    "dimensions": "auto"
+   }
+  },
+  "iphone-se-3rd-generation": {
+   "name": "iPhone SE (3rd generation)",
+   "identifiers": [
+    "iPhone14,6",
+    "iPhone12,8"
+   ],
+   "outline": {
+    "width": 67.27,
+    "height": 138.44,
+    "thickness": 7.31
+   },
+   "display_active_area": {
+    "width": 58.5,
+    "height": 104.05,
+    "left": 4.38,
+    "top": 17.19
+   },
+   "rear_heights_from_back": {
+    "camera_plateau": null,
+    "camera_glass": 0.87
+   },
+   "drawing": {
+    "file": "iphone-se-3rd-generation.pdf",
+    "url": "https://developer.apple.com/download/files/accessories/dimensional-drawings/iphone-se-3rd-generation.pdf",
+    "sheet_date": "2022-04-26"
+   },
+   "frames": {
+    "device": {
+     "origin": [0.0, 0.0, 0.0],
+     "R": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+     "definition": "Centre of the display active area, on the outer surface of the front cover glass. +X right edge, +Y top edge, +Z out of the screen (Core Motion device axes).",
+     "provenance": "definition",
+     "verified": true
+    },
+    "magsafe": {
+     "origin": [0.01, -0.005, -7.31],
+     "R": [[-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+     "definition": "Centre of the MagSafe keep-out circle on the back, on the back-plate surface. +Z out of the back.",
+     "provenance": "drawing",
+     "source": "sheet 1, Ø57.42 \"do not obstruct\" circle, u 33.63, 69.22 up from the bottom edge (= 69.22 down from the top)",
+     "note": "No MagSafe on this model (Qi charging only, note 8 \"no high powered magnets\"); this is the wireless-charging keep-out centre.",
+     "diameter": 57.42,
+     "verified": false
+    },
+    "cam_main_optical": {
+     "origin": [23.2, 58.975, -8.18],
+     "R": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+     "definition": "Centre of the lens window, on the outer surface of the camera cover glass. OpenCV optical axes of the native image: +X image right (body -Y), +Y image down (body -X), +Z the viewing direction (out of the back).",
+     "provenance": "drawing",
+     "role_basis": "only rear camera",
+     "drawing_label": "REAR CAMERA",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 90,
+      "mirrored": false,
+      "verified": false,
+      "basis": "derived from ARKit camera axes (diag(1,-1,-1)); rotation_deg 90 measured on iPhone 17 Pro"
+     },
+     "verified": false
+    },
+    "cam_front_optical": {
+     "origin": [-10.64, 60.055, 0.0],
+     "R": [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+     "definition": "Front camera centre projected onto the outer surface of the front cover glass. OpenCV optical axes of the unmirrored native image (+X image right, +Y image down), +Z the viewing direction (out of the screen).",
+     "provenance": "drawing",
+     "source": "sheet 1 detail A: FRONT CAMERA centre, u 22.99, v 9.16 (marked directly on the drawing); cone base 2.02 from detail B",
+     "orientation": {
+      "convention": "opencv_optical",
+      "rotation_deg": 270,
+      "mirrored": false,
+      "verified": false,
+      "basis": "older front sensor; rotation_deg 270 from community reports (developer forums thread 106891), not measured"
+     },
+     "verified": false
+    }
+   },
+   "cameras": {
+    "main": {
+     "frame": "cam_main_optical",
+     "facing": "back",
+     "window_diameter": 8.57,
+     "keepout_cone_deg": 76.7,
+     "keepout_cone_base": [23.2, 58.975, -5.31],
+     "drawing_label": "REAR CAMERA",
+     "role_basis": "only rear camera"
+    },
+    "front": {
+     "frame": "cam_front_optical",
+     "facing": "front",
+     "keepout_cone_base": [-10.64, 60.055, -2.02]
+    }
+   },
+   "extras": {
+    "flash": {
+     "position_in_body": [10.8, 58.975, -7.31],
+     "diameter": 3.75
+    },
+    "rear_mic": {
+     "position_in_body": [15.51, 58.975, -7.31],
+     "diameter": 1.5
+    },
+    "home_button": {
+     "position_in_body": [0.0, -59.975, 0.0],
+     "diameter": 10.9,
+     "note": "Touch ID sensor, 9.25 up from the bottom edge"
+    }
+   },
+   "also_covers": "iPhone SE (2nd generation)",
+   "review": {
+    "dimensions": "auto"
+   }
+  }
+ },
+ "identifiers": {
+  "iPhone12,8": "iphone-se-3rd-generation",
+  "iPhone13,1": "iphone-12-mini",
+  "iPhone13,2": "iphone-12",
+  "iPhone13,3": "iphone-12-pro",
+  "iPhone13,4": "iphone-12-pro-max",
+  "iPhone14,2": "iphone-13-pro",
+  "iPhone14,3": "iphone-13-pro-max",
+  "iPhone14,4": "iphone-13-mini",
+  "iPhone14,5": "iphone-13",
+  "iPhone14,6": "iphone-se-3rd-generation",
+  "iPhone14,7": "iphone-14",
+  "iPhone14,8": "iphone-14-plus",
+  "iPhone15,2": "iphone-14-pro",
+  "iPhone15,3": "iphone-14-pro-max",
+  "iPhone15,4": "iphone-15",
+  "iPhone15,5": "iphone-15-plus",
+  "iPhone16,1": "iphone-15-pro",
+  "iPhone16,2": "iphone-15-pro-max",
+  "iPhone17,1": "iphone-16-pro",
+  "iPhone17,2": "iphone-16-pro-max",
+  "iPhone17,3": "iphone-16",
+  "iPhone17,4": "iphone-16-plus",
+  "iPhone17,5": "iphone-16e",
+  "iPhone18,1": "iphone-17-pro",
+  "iPhone18,2": "iphone-17-pro-max",
+  "iPhone18,3": "iphone-17",
+  "iPhone18,4": "iphone-air",
+  "iPhone18,5": "iphone-17e"
+ }
+}

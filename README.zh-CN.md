@@ -29,7 +29,7 @@ import imuninn
 with imuninn.connect() as dev:          # 第一台找到的手机；或名字 / IP / "ip:端口"
     dev.start()
     for pose in dev.iter("ar_pose"):
-        print(pose.position, pose.intrinsics.fx)
+        print(pose.world_pos_device, pose.intrinsics.fx)
 ```
 
 ```bash

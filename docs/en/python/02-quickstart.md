@@ -8,7 +8,7 @@ import imuninn
 with imuninn.connect() as dev:          # first phone found; or "iPhone" / "10.0.0.5" / "10.0.0.5:7420"
     dev.start()                         # capture session on (or tap Start on the phone)
     for pose in dev.iter("ar_pose"):    # blocking iterator; same for "imu" / "rgb" / "depth" / "health"
-        print(pose.position, pose.intrinsics.fx)
+        print(pose.world_pos_device, pose.intrinsics.fx)
 ```
 
 Everything is synchronous; no asyncio needed.

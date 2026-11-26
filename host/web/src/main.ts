@@ -1,7 +1,10 @@
 import "../../../docs/design/tokens.css";
 import { decodeDepth, depthRangeMm, depthToImage } from "./depth";
 import { LiveSource, type Welcome } from "./live";
-import { PhoneSource, type PhoneWelcome } from "./phone";
+import { LeaseError, patchFor, PhoneSource, STATUS, valueOf, type ConfigResult, type DeviceConfig, type PhoneWelcome, type Scalar } from "./phone";
+import { ParamPanel } from "./params";
+import { BUILTIN, dumpProfile, fromConfig, parseProfile, toPatch } from "./profiles";
+import { McapRecorder } from "./recorder";
 import { McapSource } from "./mcap";
 import { RollingPlot } from "./plots";
 import { Pose3D } from "./pose3d";
@@ -47,6 +50,7 @@ applyLang();
 $("lang").onclick = () => {
   applyLang(currentLang() === "zh" ? "en" : "zh"); onLiveClosedLabels(); renderedRunning = null;
   $("btn-listen").textContent = player.enabled ? t("audio_mute") : t("audio_listen");
+  panel.render(); renderLease(); renderDeviceInfo(); renderRecButtons(); renderClock();
 };
 if (!webCodecsAvailable()) log(t("no_webcodecs"));
 if (location.protocol === "https:") $("https-hint").hidden = false;
@@ -132,7 +136,7 @@ function handle(b: Body): void {
       const p = m.position, q = m.orientation, k = m.intrinsics;
       lastPoseText = `t=${(m.header.device_time_ns / 1e9).toFixed(3)}s  seq=${m.header.seq}  tracking=${TRACKING[m.tracking] ?? m.tracking}\n` +
         `p=(${p.x.toFixed(3)}, ${p.y.toFixed(3)}, ${p.z.toFixed(3)}) m   q=(${q.x.toFixed(3)}, ${q.y.toFixed(3)}, ${q.z.toFixed(3)}, ${q.w.toFixed(3)})\n` +
-        (k.width ? `intrinsics ${k.width}×${k.height} fx=${k.fx.toFixed(1)} fy=${k.fy.toFixed(1)} cx=${k.cx.toFixed(1)} cy=${k.cy.toFixed(1)}` : "");
+        (k?.width ? `intrinsics ${k.width}×${k.height} fx=${k.fx.toFixed(1)} fy=${k.fy.toFixed(1)} cx=${k.cx.toFixed(1)} cy=${k.cy.toFixed(1)}` : "");
       break;
     }
     case "imu": {
@@ -205,6 +209,7 @@ function frame(): void {
   $("health").innerHTML = healthText;
   renderStats();
   renderCaptureButton();
+  renderRecInfo();
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -220,7 +225,9 @@ function resetViews(): void {
 // `imuninn web` relay ("ws://host:7430/ws", also used for MCAP replay without a phone).
 const live = new LiveSource();
 const phone = new PhoneSource();
-let configVersion = 0;
+// The phone names the lease holder by client name: make ours distinguishable from another tab's.
+phone.clientName = `web-viewer-${Math.random().toString(36).slice(2, 6)}`;
+const panel = new ParamPanel($("params"));
 const wsUrl = $<HTMLInputElement>("ws-url");
 // A ws:// URL still selects the relay-style JSON source (kept for replay tooling), but the
 // default and all user-facing text are the phone's address.
@@ -236,6 +243,10 @@ function onLiveClosed(): void {
   $<HTMLInputElement>("depth-enable").disabled = true; $<HTMLSelectElement>("mode").disabled = true;
   $<HTMLInputElement>("audio-enable").disabled = true;
   $("btn-connect").textContent = t("connect");
+  setPhoneControls(false);
+  panel.clear(); $("params-empty").hidden = false;
+  phoneRecording = false; renderRecButtons(); renderLease(); renderClock(); renderDeviceInfo();
+  if (recorder) void stopMcapRecording();
 }
 function onLiveReady(name: string, streams: string[], subscribed: Set<string>, isLive: boolean, hasLidar: boolean, depthOn: boolean,
                      subscribe: (id: string, on: boolean) => void, audioOn: boolean | null = null): void {
@@ -265,7 +276,189 @@ function applyModeFromConfig(cfg: any): void {
   const m = cfg.mode === 2 || cfg.mode === "SESSION_MODE_CAMERA" ? "camera" : "ar";
   sessionMode = m;
   $<HTMLSelectElement>("mode").value = m;
+  // The quick switches follow the phone too (another client or the phone's own UI may flip them).
+  const enabled = (id: string) => !!(cfg.streams ?? []).find((s: any) => s.stream_id === id && s.enabled);
+  if (phone.open) {
+    $<HTMLInputElement>("depth-enable").checked = enabled("depth");
+    $<HTMLInputElement>("audio-enable").checked = enabled("audio");
+  }
   updateDepthToggle();
+}
+
+// ---------------------------------------------------------------- phone control (parity with the Python client)
+/** One partial config to the phone, with the outcome in the log. Returns null when nothing was applied. */
+async function applyPatch(patch: DeviceConfig, what: string, retry = true): Promise<ConfigResult | null> {
+  try {
+    const r = await phone.setConfig(patch);
+    const stale = r.fields.find((f) => f.key === "config_version" && f.status === 3);
+    if (stale && retry) {
+      // Someone else changed the config since we last heard: take the new version and try once more.
+      await phone.fetchConfig();
+      log(t("stale_retry"));
+      return applyPatch(patch, what, false);
+    }
+    for (const f of r.fields) {
+      const eff = valueOf(f.effective);
+      log(`${f.key} ${STATUS[f.status] ?? f.status}${eff !== undefined ? ` = ${eff}` : ""}${f.reason ? ` (${f.reason})` : ""}`);
+    }
+    if (r.session_restarted) log(t("session_restarted"));
+    return r;
+  } catch (err) {
+    log(err instanceof LeaseError ? `${t("lease_blocked")}: ${err.message}` : `set ${what} failed: ${err instanceof Error ? err.message : err}`);
+    return null;
+  }
+}
+async function setParam(key: string, value: Scalar): Promise<ConfigResult | null> {
+  const patch = patchFor(key, value, phone.spec(key)?.kind);
+  return applyPatch(patch, key);
+}
+panel.onSet = setParam;
+
+function setPhoneControls(on: boolean): void {
+  for (const id of ["btn-phone-rec", "btn-mcap-rec", "btn-sync", "btn-lease", "btn-refresh", "btn-profile-apply", "btn-profile-save", "profile", "profile-file"])
+    $<HTMLButtonElement>(id).disabled = !on;
+}
+
+// lease
+function renderLease(): void {
+  const mine = !!phone.leaseHolder && phone.leaseHolder === phone.clientName;
+  $("lease-pill").hidden = !phone.open;
+  $("lease-text").textContent = !phone.leaseHolder ? t("lease_free") : mine ? t("lease_mine") : `${t("lease_other")} ${phone.leaseHolder}`;
+  $("lease-dot").className = `dot ${!phone.leaseHolder ? "muted" : mine ? "ok" : "warn"}`;
+  $("btn-lease").textContent = mine ? t("lease_release") : t("lease_take");
+}
+phone.onLease = (holder, event) => {
+  log(`lease ${event}${holder ? ` → ${holder}` : ""}`);
+  if (event === "revoked") log(t("lease_revoked"));
+  renderLease();
+};
+$("btn-lease").onclick = async () => {
+  try {
+    if (phone.leaseHolder === phone.clientName) await phone.releaseLease();
+    else if (!(await phone.acquireLease())) log(`${t("lease_denied")} ${phone.leaseHolder || "?"}`);
+  } catch (err) { log(`lease: ${err}`); }
+  renderLease();
+};
+
+// refresh: capabilities (specs + current values) straight from the phone
+$("btn-refresh").onclick = async () => {
+  try { const caps = await phone.fetchCapabilities(); panel.render(caps, phone.config); applyModeFromConfig(phone.config); log(`config v${phone.config?.config_version ?? "?"}`); }
+  catch (err) { log(`refresh failed: ${err}`); }
+};
+
+// profiles (same YAML files as `imuninn profile apply / save`)
+const profileSel = $<HTMLSelectElement>("profile");
+for (const name of Object.keys(BUILTIN)) { const o = document.createElement("option"); o.value = name; o.textContent = name; profileSel.append(o); }
+async function applyProfileText(text: string, name: string): Promise<void> {
+  let patch: DeviceConfig;
+  try { patch = toPatch(parseProfile(text), phone.capabilities); }
+  catch (err) { log(`${t("profile_bad")} (${name}): ${err instanceof Error ? err.message : err}`); return; }
+  const r = await applyPatch(patch, `profile ${name}`);
+  if (r) log(`${t("profile_applied")}: ${name} · config v${r.config_version}`);
+}
+$("btn-profile-apply").onclick = () => void applyProfileText(BUILTIN[profileSel.value], profileSel.value);
+$<HTMLInputElement>("profile-file").onchange = async (e) => {
+  const input = e.target as HTMLInputElement;
+  const f = input.files?.[0];
+  input.value = "";
+  if (f) await applyProfileText(await f.text(), f.name);
+};
+function download(name: string, text: string, type: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+}
+$("btn-profile-save").onclick = async () => {
+  try {
+    const cfg = await phone.fetchConfig();
+    const name = `${(phone.device?.device_name || "phone").replace(/[^\w.-]+/g, "_")}-v${cfg.config_version ?? 0}`;
+    download(`${name}.yaml`, dumpProfile(fromConfig(cfg, name)), "text/yaml");
+  } catch (err) { log(`save profile failed: ${err}`); }
+};
+
+// clock
+function renderClock(): void {
+  const c = phone.open ? phone.clock : null;
+  // The offset itself (wall clock minus the phone's monotonic clock) is only meaningful to code;
+  // what a person can judge is how tight the estimate is.
+  const el = $("clock-info");
+  el.textContent = c ? `${t("clock_synced")} · RTT ${(Number(c.rttNs) / 1e6).toFixed(2)} ms` : "";
+  el.title = c ? `${t("clock_offset")} ${(Number(c.offsetNs) / 1e9).toFixed(6)} s` : "";
+}
+$("btn-sync").onclick = async () => {
+  const b = $<HTMLButtonElement>("btn-sync");
+  b.disabled = true;
+  try { if (!(await phone.timeSync())) log(t("clock_failed")); }
+  catch (err) { log(`${t("clock_failed")}: ${err}`); }
+  b.disabled = !phone.open;
+  renderClock();
+};
+
+// recording: on the phone (SessionControl START/STOP_RECORDING) and here (MCAP)
+let phoneRecording = false;
+let recorder: McapRecorder | null = null;
+function renderRecButtons(): void {
+  const p = $("btn-phone-rec"), m = $("btn-mcap-rec");
+  p.textContent = phoneRecording ? t("phone_rec_stop") : t("phone_rec_start");
+  p.classList.toggle("recording", phoneRecording);
+  m.textContent = recorder ? t("mcap_rec_stop") : t("mcap_rec_start");
+  m.classList.toggle("recording", !!recorder);
+}
+function renderRecInfo(): void {
+  $("rec-info").textContent = recorder
+    ? `${recorder.seconds.toFixed(0)} s · ${recorder.count.toLocaleString()} ${t("rec_messages")} · ${(recorder.bytes / 1e6).toFixed(1)} MB` : "";
+}
+$("btn-phone-rec").onclick = () => {
+  if (phoneRecording) phone.stopRecording(); else phone.startRecording();
+  phoneRecording = !phoneRecording;
+  log(phoneRecording ? "phone recording: start" : "phone recording: stop");
+  renderRecButtons();
+};
+async function stopMcapRecording(): Promise<void> {
+  const r = recorder;
+  if (!r) return;
+  recorder = null; phone.onRaw = null; renderRecButtons();
+  try { await r.stop(); log(`${t("rec_saved")}: ${r.name} · ${r.count.toLocaleString()} ${t("rec_messages")} · ${(r.bytes / 1e6).toFixed(1)} MB`); }
+  catch (err) { log(`${t("rec_failed")}: ${err}`); }
+}
+$("btn-mcap-rec").onclick = async () => {
+  if (recorder) { await stopMcapRecording(); return; }
+  try {
+    const r = await McapRecorder.start(phone.deviceBytes, phone.capabilitiesBytes);
+    if (r.inMemory) log(t("rec_memory"));
+    if (phone.config) r.writeConfig(phone.config);
+    recorder = r;
+    phone.onRaw = (kind, payload, body) => {
+      if (kind === "config_changed") return;   // recorded from the control channel below
+      r.write(kind, payload, (body.msg as any).header?.device_time_ns ?? 0, phone.clock?.offsetNs ?? null);
+      if (r.error && recorder === r) void stopMcapRecording();
+    };
+    log(`recording to ${r.name}`);
+  } catch (err) { if ((err as any)?.name !== "AbortError") log(`${t("rec_failed")}: ${err}`); }
+  renderRecButtons();
+};
+
+setPhoneControls(false); renderLease(); renderRecButtons();
+
+// device identity (Welcome.device)
+function renderDeviceInfo(): void {
+  const d = phone.open ? phone.device : null;
+  const box = $("device-info");
+  box.innerHTML = "";
+  if (!d) return;
+  const row = (k: string, v: string) => {
+    const r = document.createElement("div"); r.className = "row";
+    const a = document.createElement("span"); a.className = "k"; a.textContent = k;
+    const b = document.createElement("span"); b.className = "v"; b.textContent = v;
+    r.append(a, b); box.append(r);
+  };
+  row(t("dev_model"), `${d.model ?? "?"}${d.has_lidar ? " · LiDAR" : ""}`);
+  row(t("dev_os"), `${["", "iOS", "Android"][d.platform ?? 0] ?? ""} ${d.os_version ?? ""}`.trim());
+  row(t("dev_app"), d.app_version ?? "?");
+  row(t("dev_protocol"), `v${d.protocol_version ?? "?"}`);
+  row(t("dev_id"), d.device_id ?? "?");
+  row(t("dev_client"), `${phone.clientName} · #${phone.clientId}`);
 }
 
 live.onStatus = (s) => { statusFromSource(s); log(s); };
@@ -282,17 +475,25 @@ live.onWelcome = (w: Welcome) => {
 phone.onStatus = (s) => { statusFromSource(s); log(s); };
 phone.onBody = handle;
 phone.onClose = onLiveClosed;
-phone.onConfig = (cfg) => { configVersion = cfg?.config_version ?? configVersion; log(`config v${configVersion}`); applyModeFromConfig(cfg); };
+phone.onConfig = (cfg) => {
+  log(`config v${cfg?.config_version ?? "?"}`);
+  applyModeFromConfig(cfg); panel.sync(cfg);
+  recorder?.writeConfig(cfg);
+};
 phone.onWelcome = (w: PhoneWelcome) => {
   const d: any = w.device;
-  configVersion = w.config?.config_version ?? 0;
   const depthOn = !!(w.config?.streams ?? []).find((s: any) => s.stream_id === "depth" && s.enabled);
   const ids = w.streams.map((s) => s.stream_id);
   const audioOn = ids.includes("audio") ? !!(w.config?.streams ?? []).find((s: any) => s.stream_id === "audio" && s.enabled) : null;
   applyModeFromConfig(w.config);
   onLiveReady(`${d.device_name ?? ""} ${d.model ?? ""}${d.has_lidar ? " · LiDAR" : ""} · ${t("direct")}`, ids, new Set(ids), true, !!d.has_lidar, depthOn,
     (id, on) => phone.subscribe([id], !on), audioOn);
+  setPhoneControls(true);
+  panel.setEnabled(true); panel.render(w.capabilities, w.config); $("params-empty").hidden = true;
+  renderLease(); renderDeviceInfo(); renderRecButtons();
   log(`welcome: ${JSON.stringify(d)} client_id=${w.client_id}`);
+  // The handshake starts a time sync; show its result when it lands.
+  setTimeout(renderClock, 1500);
 };
 
 $("btn-connect").onclick = () => {
@@ -328,24 +529,20 @@ $("btn-start").onclick = () => {
 $<HTMLSelectElement>("mode").onchange = async (e) => {
   const m = (e.target as HTMLSelectElement).value;
   if (phone.open) {
-    try { const r = await phone.set("session.mode", m, configVersion); configVersion = r?.config_version ?? configVersion; }
-    catch (err) { log(`set session.mode failed: ${err}`); }
+    if (!(await setParam("session.mode", m))) { applyModeFromConfig(phone.config); return; }
   } else live.set("session.mode", m);
   sessionMode = m; updateDepthToggle();
 };
 $<HTMLInputElement>("depth-enable").onchange = async (e) => {
   const on = (e.target as HTMLInputElement).checked;
-  if (phone.open) {
-    try { const r = await phone.set("depth.enabled", on, configVersion); configVersion = r?.config_version ?? configVersion; }
-    catch (err) { log(`set depth.enabled failed: ${err}`); }
-  } else live.set("depth.enabled", on);
+  if (phone.open) { if (!(await setParam("depth.enabled", on))) applyModeFromConfig(phone.config); }
+  else live.set("depth.enabled", on);
 };
 
 $<HTMLInputElement>("audio-enable").onchange = async (e) => {
   const on = (e.target as HTMLInputElement).checked;
   if (!phone.open) return;
-  try { const r = await phone.set("audio.enabled", on, configVersion); configVersion = r?.config_version ?? configVersion; }
-  catch (err) { log(`set audio.enabled failed: ${err}`); }
+  if (!(await setParam("audio.enabled", on))) applyModeFromConfig(phone.config);
 };
 function renderListen(): void { $("btn-listen").textContent = player.enabled ? t("audio_mute") : t("audio_listen"); }
 $("btn-listen").onclick = async () => {

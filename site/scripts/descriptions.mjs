@@ -47,6 +47,10 @@ export const DESCRIPTIONS = {
     zh: "imuninn 进阶用法：自己管理 asyncio 事件循环的 PhoneClient、浏览器同款 WebSocket 传输，以及给 AI agent 用的 MCP server。",
     en: "Advanced imuninn: the asyncio PhoneClient for your own event loop, the WebSocket transport used by browsers, and the MCP server for AI agents.",
   },
+  "python/frames": {
+    zh: "iMuninn 的统一坐标系：z 朝上的 world、device、OpenCV 相机光学系和 REP 145 的 IMU 符号；30 款 iPhone 的镜头位置常量，可导出 URDF、MJCF 和 glTF。",
+    en: "iMuninn's unified coordinate frames: z-up world, device, OpenCV camera optical frames and the REP 145 IMU sign; camera positions for 30 iPhone models, with URDF, MJCF and glTF export.",
+  },
   "web/web-viewer": {
     zh: "在浏览器里直接查看 iPhone 的视频、深度、3D 位姿轨迹和 IMU 曲线，无需安装；也可以离线回放 MCAP 文件。",
     en: "View an iPhone's video, depth, 3D pose trajectory and IMU plots in a browser with nothing to install, or replay an MCAP file offline.",

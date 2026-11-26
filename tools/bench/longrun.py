@@ -55,7 +55,7 @@ def main() -> None:
     signal.signal(signal.SIGTERM, on_sig)
 
     rows: list[dict] = []
-    with imuninn.connect(args.target, name="longrun") as dev:
+    with imuninn.connect(args.target, name="longrun", frames="raw") as dev:
         print(f"connected: {dev!r}", flush=True)
         r = dev.apply_profile(args.profile)
         bad = [f for f in r.fields if f.status != pb.ConfigResult.FieldResult.STATUS_APPLIED]

@@ -11,6 +11,15 @@ Astro Starlight。内容不在这里写：`npm run sync` 从 `../docs/` 和 `../
 - 分享预览图是 `public/og.jpg`（1200×630，从宣传图裁出），在 `astro.config.mjs` 的 `head` 里引用。
 - 首页右侧的 App 图是 `src/assets/home-app.webp`（1056×1212，透明底，只有三台手机、没有文字），在 `src/components/Hero.astro` 里和 App Store 徽章放在一起。它用无头 Chrome 从 `mobile/store-screenshots/artwork/art.html` 渲染：去掉左侧文案和背景渐变（`.copy` 隐藏、`body` 透明），用 6.3in 截图 01 / 05 / 02 作中 / 左 / 右，再用 sharp 转 WebP。
 
+- iPhone 参数页（`/parameter-definition/`，英文 `/en/parameter-definition/`）不是文档页，是 `src/pages/` 下的独立页面：`src/components/ParameterDefinition.astro`（界面和中英文文案）加 `src/scripts/parameter-viewer.js`（three.js 3D）。数据只有一份，就是仓库里的 `protocol/frames/iphone-frames.json`，构建时由 `src/pages/parameter-definition/iphone-frames.json.js` 原样发布到 `/parameter-definition/iphone-frames.json`，页面再去取。顶栏的“iPhone 参数”入口在 `src/components/Header.astro`，在新标签页打开。尺寸旁的“自动识别 / 已人工核验”来自 `protocol/frames/review.json`，改法见 `protocol/frames/README.md`。
+- 参数页的“下载 3D 模型”按钮指向 `public/parameter-definition/models/` 下已提交的静态文件（30 个机型的 URDF、MJCF、glb，加一个 `manifest.json`，共约 1.1 MB）。它们由 Python 包生成，网站构建时不跑 Python。机型数据变了要重新生成并提交，否则 `host/python/tests/test_models.py` 会失败：
+
+  ```bash
+  imuninn hardware export --all --format all -o site/public/parameter-definition/models
+  ```
+
+  需要 `pip install "imuninn[models]"`（glb 用 trimesh）。
+
 ```bash
 cd site && npm install
 npm run dev        # http://localhost:4321

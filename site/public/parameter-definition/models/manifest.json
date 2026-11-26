@@ -1,0 +1,524 @@
+{
+ "generator": "imuninn.models.export_bundle",
+ "frame_convention": 1,
+ "data_sha256": "8f02da05f48e04b0ad8992f0df858e011d9893038b39d1a7f1a9fef9ed165b01",
+ "units": "m",
+ "note": "Frames match protocol/frames/iphone-frames.json. Geometry is approximate (a box, or a rounded box with an estimated corner radius in glb) and the mass is estimated from the volume.",
+ "formats": {
+  "urdf": ".urdf",
+  "mjcf": ".xml",
+  "glb": ".glb"
+ },
+ "models": {
+  "iphone-12": {
+   "name": "iPhone 12",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_12.urdf",
+     "bytes": 2694
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_12.xml",
+     "bytes": 1515
+    },
+    "glb": {
+     "path": "glb/iphone_12.glb",
+     "bytes": 28176
+    }
+   }
+  },
+  "iphone-12-pro": {
+   "name": "iPhone 12 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_12_pro.urdf",
+     "bytes": 3202
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_12_pro.xml",
+     "bytes": 1785
+    },
+    "glb": {
+     "path": "glb/iphone_12_pro.glb",
+     "bytes": 30036
+    }
+   }
+  },
+  "iphone-12-pro-max": {
+   "name": "iPhone 12 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_12_pro_max.urdf",
+     "bytes": 3222
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_12_pro_max.xml",
+     "bytes": 1807
+    },
+    "glb": {
+     "path": "glb/iphone_12_pro_max.glb",
+     "bytes": 29968
+    }
+   }
+  },
+  "iphone-12-mini": {
+   "name": "iPhone 12 mini",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_12_mini.urdf",
+     "bytes": 2751
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_12_mini.xml",
+     "bytes": 1559
+    },
+    "glb": {
+     "path": "glb/iphone_12_mini.glb",
+     "bytes": 28164
+    }
+   }
+  },
+  "iphone-13": {
+   "name": "iPhone 13",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_13.urdf",
+     "bytes": 2709
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_13.xml",
+     "bytes": 1525
+    },
+    "glb": {
+     "path": "glb/iphone_13.glb",
+     "bytes": 28244
+    }
+   }
+  },
+  "iphone-13-pro": {
+   "name": "iPhone 13 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_13_pro.urdf",
+     "bytes": 3202
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_13_pro.xml",
+     "bytes": 1784
+    },
+    "glb": {
+     "path": "glb/iphone_13_pro.glb",
+     "bytes": 30004
+    }
+   }
+  },
+  "iphone-13-pro-max": {
+   "name": "iPhone 13 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_13_pro_max.urdf",
+     "bytes": 3216
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_13_pro_max.xml",
+     "bytes": 1797
+    },
+    "glb": {
+     "path": "glb/iphone_13_pro_max.glb",
+     "bytes": 30024
+    }
+   }
+  },
+  "iphone-13-mini": {
+   "name": "iPhone 13 mini",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_13_mini.urdf",
+     "bytes": 2755
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_13_mini.xml",
+     "bytes": 1563
+    },
+    "glb": {
+     "path": "glb/iphone_13_mini.glb",
+     "bytes": 28196
+    }
+   }
+  },
+  "iphone-se-3rd-generation": {
+   "name": "iPhone SE (3rd generation)",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_se_3rd_generation.urdf",
+     "bytes": 2261
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_se_3rd_generation.xml",
+     "bytes": 1309
+    },
+    "glb": {
+     "path": "glb/iphone_se_3rd_generation.glb",
+     "bytes": 26424
+    }
+   }
+  },
+  "iphone-14": {
+   "name": "iPhone 14",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_14.urdf",
+     "bytes": 2685
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_14.xml",
+     "bytes": 1506
+    },
+    "glb": {
+     "path": "glb/iphone_14.glb",
+     "bytes": 28196
+    }
+   }
+  },
+  "iphone-14-plus": {
+   "name": "iPhone 14 Plus",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_14_plus.urdf",
+     "bytes": 2699
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_14_plus.xml",
+     "bytes": 1518
+    },
+    "glb": {
+     "path": "glb/iphone_14_plus.glb",
+     "bytes": 28208
+    }
+   }
+  },
+  "iphone-14-pro": {
+   "name": "iPhone 14 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_14_pro.urdf",
+     "bytes": 3246
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_14_pro.xml",
+     "bytes": 1817
+    },
+    "glb": {
+     "path": "glb/iphone_14_pro.glb",
+     "bytes": 30052
+    }
+   }
+  },
+  "iphone-14-pro-max": {
+   "name": "iPhone 14 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_14_pro_max.urdf",
+     "bytes": 3249
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_14_pro_max.xml",
+     "bytes": 1822
+    },
+    "glb": {
+     "path": "glb/iphone_14_pro_max.glb",
+     "bytes": 30016
+    }
+   }
+  },
+  "iphone-15": {
+   "name": "iPhone 15",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_15.urdf",
+     "bytes": 2734
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_15.xml",
+     "bytes": 1543
+    },
+    "glb": {
+     "path": "glb/iphone_15.glb",
+     "bytes": 28192
+    }
+   }
+  },
+  "iphone-15-plus": {
+   "name": "iPhone 15 Plus",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_15_plus.urdf",
+     "bytes": 2738
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_15_plus.xml",
+     "bytes": 1547
+    },
+    "glb": {
+     "path": "glb/iphone_15_plus.glb",
+     "bytes": 28196
+    }
+   }
+  },
+  "iphone-15-pro": {
+   "name": "iPhone 15 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_15_pro.urdf",
+     "bytes": 3209
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_15_pro.xml",
+     "bytes": 1792
+    },
+    "glb": {
+     "path": "glb/iphone_15_pro.glb",
+     "bytes": 30044
+    }
+   }
+  },
+  "iphone-15-pro-max": {
+   "name": "iPhone 15 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_15_pro_max.urdf",
+     "bytes": 3258
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_15_pro_max.xml",
+     "bytes": 1830
+    },
+    "glb": {
+     "path": "glb/iphone_15_pro_max.glb",
+     "bytes": 30072
+    }
+   }
+  },
+  "iphone-16": {
+   "name": "iPhone 16",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_16.urdf",
+     "bytes": 2723
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_16.xml",
+     "bytes": 1532
+    },
+    "glb": {
+     "path": "glb/iphone_16.glb",
+     "bytes": 28176
+    }
+   }
+  },
+  "iphone-16-plus": {
+   "name": "iPhone 16 Plus",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_16_plus.urdf",
+     "bytes": 2717
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_16_plus.xml",
+     "bytes": 1528
+    },
+    "glb": {
+     "path": "glb/iphone_16_plus.glb",
+     "bytes": 28232
+    }
+   }
+  },
+  "iphone-16-pro": {
+   "name": "iPhone 16 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_16_pro.urdf",
+     "bytes": 3300
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_16_pro.xml",
+     "bytes": 1858
+    },
+    "glb": {
+     "path": "glb/iphone_16_pro.glb",
+     "bytes": 30012
+    }
+   }
+  },
+  "iphone-16-pro-max": {
+   "name": "iPhone 16 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_16_pro_max.urdf",
+     "bytes": 3218
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_16_pro_max.xml",
+     "bytes": 1800
+    },
+    "glb": {
+     "path": "glb/iphone_16_pro_max.glb",
+     "bytes": 30048
+    }
+   }
+  },
+  "iphone-16e": {
+   "name": "iPhone 16e",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_16e.urdf",
+     "bytes": 2189
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_16e.xml",
+     "bytes": 1248
+    },
+    "glb": {
+     "path": "glb/iphone_16e.glb",
+     "bytes": 26372
+    }
+   }
+  },
+  "iphone-17": {
+   "name": "iPhone 17",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_17.urdf",
+     "bytes": 2788
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_17.xml",
+     "bytes": 1583
+    },
+    "glb": {
+     "path": "glb/iphone_17.glb",
+     "bytes": 28160
+    }
+   }
+  },
+  "iphone-17-pro": {
+   "name": "iPhone 17 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_17_pro.urdf",
+     "bytes": 3226
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_17_pro.xml",
+     "bytes": 1812
+    },
+    "glb": {
+     "path": "glb/iphone_17_pro.glb",
+     "bytes": 29968
+    }
+   }
+  },
+  "iphone-17-pro-max": {
+   "name": "iPhone 17 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_17_pro_max.urdf",
+     "bytes": 3219
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_17_pro_max.xml",
+     "bytes": 1804
+    },
+    "glb": {
+     "path": "glb/iphone_17_pro_max.glb",
+     "bytes": 30016
+    }
+   }
+  },
+  "iphone-air": {
+   "name": "iPhone Air",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_air.urdf",
+     "bytes": 2233
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_air.xml",
+     "bytes": 1280
+    },
+    "glb": {
+     "path": "glb/iphone_air.glb",
+     "bytes": 26376
+    }
+   }
+  },
+  "iphone-17e": {
+   "name": "iPhone 17e",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_17e.urdf",
+     "bytes": 2189
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_17e.xml",
+     "bytes": 1248
+    },
+    "glb": {
+     "path": "glb/iphone_17e.glb",
+     "bytes": 26372
+    }
+   }
+  },
+  "iphone-18-pro": {
+   "name": "iPhone 18 Pro",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_18_pro.urdf",
+     "bytes": 3229
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_18_pro.xml",
+     "bytes": 1815
+    },
+    "glb": {
+     "path": "glb/iphone_18_pro.glb",
+     "bytes": 30064
+    }
+   }
+  },
+  "iphone-18-pro-max": {
+   "name": "iPhone 18 Pro Max",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_18_pro_max.urdf",
+     "bytes": 3220
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_18_pro_max.xml",
+     "bytes": 1805
+    },
+    "glb": {
+     "path": "glb/iphone_18_pro_max.glb",
+     "bytes": 30112
+    }
+   }
+  },
+  "iphone-duo": {
+   "name": "iPhone Duo",
+   "files": {
+    "urdf": {
+     "path": "urdf/iphone_duo.urdf",
+     "bytes": 2735
+    },
+    "mjcf": {
+     "path": "mjcf/iphone_duo.xml",
+     "bytes": 1545
+    },
+    "glb": {
+     "path": "glb/iphone_duo.glb",
+     "bytes": 28232
+    }
+   }
+  }
+ }
+}

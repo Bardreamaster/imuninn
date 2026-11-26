@@ -3,7 +3,10 @@ import ARKit
 import Foundation
 import UIKit
 
-public let protocolVersion: UInt32 = 6  // keep in sync with protocol/VERSION
+public let protocolVersion: UInt32 = 7  // keep in sync with protocol/VERSION
+/// Coordinate-frame convention this build reports (protocol/frames/convention.json, frame_convention).
+/// The app sends native ARKit / Core Motion / sensor-orientation data; clients convert.
+public let frameConvention: UInt32 = 1
 
 public struct DeviceInfo: Codable {
   public let deviceId: String

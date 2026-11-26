@@ -8,10 +8,10 @@ import imuninn
 with imuninn.connect() as dev:          # 第一台找到的手机；或 "iPhone" / "10.0.0.5" / "10.0.0.5:7420"
     dev.start()                         # 开始采集（也可以在手机上点）
     for pose in dev.iter("ar_pose"):    # 阻塞迭代；"imu" / "rgb" / "depth" / "health" 同理
-        print(pose.position, pose.intrinsics.fx)
+        print(pose.world_pos_device, pose.intrinsics.fx)
 ```
 
-全部是同步调用，不需要懂 asyncio。
+全部是同步调用，不需要懂 asyncio。位姿和 IMU 已换算成 z 朝上的统一坐标系，见[坐标系与手机硬件常量](11-frames.md)。
 
 ## 发现与连接
 

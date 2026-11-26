@@ -114,7 +114,7 @@ class Header(_message.Message):
     def __init__(self, stream_id: _Optional[str] = ..., seq: _Optional[int] = ..., device_time_ns: _Optional[int] = ..., protocol_version: _Optional[int] = ..., config_version: _Optional[int] = ...) -> None: ...
 
 class DeviceInfo(_message.Message):
-    __slots__ = ("device_id", "device_name", "model", "platform", "os_version", "protocol_version", "app_version", "has_lidar")
+    __slots__ = ("device_id", "device_name", "model", "platform", "os_version", "protocol_version", "app_version", "has_lidar", "frame_convention", "ar_capture_device_type")
     DEVICE_ID_FIELD_NUMBER: _ClassVar[int]
     DEVICE_NAME_FIELD_NUMBER: _ClassVar[int]
     MODEL_FIELD_NUMBER: _ClassVar[int]
@@ -123,6 +123,8 @@ class DeviceInfo(_message.Message):
     PROTOCOL_VERSION_FIELD_NUMBER: _ClassVar[int]
     APP_VERSION_FIELD_NUMBER: _ClassVar[int]
     HAS_LIDAR_FIELD_NUMBER: _ClassVar[int]
+    FRAME_CONVENTION_FIELD_NUMBER: _ClassVar[int]
+    AR_CAPTURE_DEVICE_TYPE_FIELD_NUMBER: _ClassVar[int]
     device_id: str
     device_name: str
     model: str
@@ -131,7 +133,9 @@ class DeviceInfo(_message.Message):
     protocol_version: int
     app_version: str
     has_lidar: bool
-    def __init__(self, device_id: _Optional[str] = ..., device_name: _Optional[str] = ..., model: _Optional[str] = ..., platform: _Optional[_Union[Platform, str]] = ..., os_version: _Optional[str] = ..., protocol_version: _Optional[int] = ..., app_version: _Optional[str] = ..., has_lidar: _Optional[bool] = ...) -> None: ...
+    frame_convention: int
+    ar_capture_device_type: str
+    def __init__(self, device_id: _Optional[str] = ..., device_name: _Optional[str] = ..., model: _Optional[str] = ..., platform: _Optional[_Union[Platform, str]] = ..., os_version: _Optional[str] = ..., protocol_version: _Optional[int] = ..., app_version: _Optional[str] = ..., has_lidar: _Optional[bool] = ..., frame_convention: _Optional[int] = ..., ar_capture_device_type: _Optional[str] = ...) -> None: ...
 
 class ParamSpec(_message.Message):
     __slots__ = ("key", "label", "unit", "kind", "apply", "min", "max", "step", "choices", "current", "default", "read_only")
@@ -617,7 +621,7 @@ class PoseSample(_message.Message):
     def __init__(self, header: _Optional[_Union[Header, _Mapping]] = ..., position: _Optional[_Union[Vec3, _Mapping]] = ..., orientation: _Optional[_Union[Quat, _Mapping]] = ..., tracking: _Optional[_Union[TrackingState, str]] = ..., intrinsics: _Optional[_Union[Intrinsics, _Mapping]] = ...) -> None: ...
 
 class VideoFrame(_message.Message):
-    __slots__ = ("header", "format", "width", "height", "keyframe", "data", "intrinsics", "rotation_deg")
+    __slots__ = ("header", "format", "width", "height", "keyframe", "data", "intrinsics", "rotation_deg", "camera", "mirrored")
     HEADER_FIELD_NUMBER: _ClassVar[int]
     FORMAT_FIELD_NUMBER: _ClassVar[int]
     WIDTH_FIELD_NUMBER: _ClassVar[int]
@@ -626,6 +630,8 @@ class VideoFrame(_message.Message):
     DATA_FIELD_NUMBER: _ClassVar[int]
     INTRINSICS_FIELD_NUMBER: _ClassVar[int]
     ROTATION_DEG_FIELD_NUMBER: _ClassVar[int]
+    CAMERA_FIELD_NUMBER: _ClassVar[int]
+    MIRRORED_FIELD_NUMBER: _ClassVar[int]
     header: Header
     format: PixelFormat
     width: int
@@ -634,10 +640,12 @@ class VideoFrame(_message.Message):
     data: bytes
     intrinsics: Intrinsics
     rotation_deg: int
-    def __init__(self, header: _Optional[_Union[Header, _Mapping]] = ..., format: _Optional[_Union[PixelFormat, str]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., keyframe: _Optional[bool] = ..., data: _Optional[bytes] = ..., intrinsics: _Optional[_Union[Intrinsics, _Mapping]] = ..., rotation_deg: _Optional[int] = ...) -> None: ...
+    camera: str
+    mirrored: bool
+    def __init__(self, header: _Optional[_Union[Header, _Mapping]] = ..., format: _Optional[_Union[PixelFormat, str]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., keyframe: _Optional[bool] = ..., data: _Optional[bytes] = ..., intrinsics: _Optional[_Union[Intrinsics, _Mapping]] = ..., rotation_deg: _Optional[int] = ..., camera: _Optional[str] = ..., mirrored: _Optional[bool] = ...) -> None: ...
 
 class DepthFrame(_message.Message):
-    __slots__ = ("header", "width", "height", "compression", "depth_mm", "confidence", "intrinsics", "rotation_deg")
+    __slots__ = ("header", "width", "height", "compression", "depth_mm", "confidence", "intrinsics", "rotation_deg", "camera", "mirrored")
     HEADER_FIELD_NUMBER: _ClassVar[int]
     WIDTH_FIELD_NUMBER: _ClassVar[int]
     HEIGHT_FIELD_NUMBER: _ClassVar[int]
@@ -646,6 +654,8 @@ class DepthFrame(_message.Message):
     CONFIDENCE_FIELD_NUMBER: _ClassVar[int]
     INTRINSICS_FIELD_NUMBER: _ClassVar[int]
     ROTATION_DEG_FIELD_NUMBER: _ClassVar[int]
+    CAMERA_FIELD_NUMBER: _ClassVar[int]
+    MIRRORED_FIELD_NUMBER: _ClassVar[int]
     header: Header
     width: int
     height: int
@@ -654,7 +664,9 @@ class DepthFrame(_message.Message):
     confidence: bytes
     intrinsics: Intrinsics
     rotation_deg: int
-    def __init__(self, header: _Optional[_Union[Header, _Mapping]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., compression: _Optional[_Union[DepthCompression, str]] = ..., depth_mm: _Optional[bytes] = ..., confidence: _Optional[bytes] = ..., intrinsics: _Optional[_Union[Intrinsics, _Mapping]] = ..., rotation_deg: _Optional[int] = ...) -> None: ...
+    camera: str
+    mirrored: bool
+    def __init__(self, header: _Optional[_Union[Header, _Mapping]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., compression: _Optional[_Union[DepthCompression, str]] = ..., depth_mm: _Optional[bytes] = ..., confidence: _Optional[bytes] = ..., intrinsics: _Optional[_Union[Intrinsics, _Mapping]] = ..., rotation_deg: _Optional[int] = ..., camera: _Optional[str] = ..., mirrored: _Optional[bool] = ...) -> None: ...
 
 class AudioChunk(_message.Message):
     __slots__ = ("header", "encoding", "sample_rate", "channels", "frame_count", "data")
