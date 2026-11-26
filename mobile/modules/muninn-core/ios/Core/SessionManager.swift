@@ -91,6 +91,14 @@ public final class SessionManager {
   private var videoBytes = ByteRate()
   private var videoSeq: UInt64 = 0
   private var lastIntrinsics = simd_float3x3(1)
+  /// Lens of the video stream and whether its buffers are mirrored (VideoFrame.camera / .mirrored, v7).
+  /// Written on `queue` (restartSources), read on the encoder's queue (publishVideo): behind a lock.
+  private let videoLensLock = NSLock()
+  private var _videoLens = (camera: "back_wide", mirrored: false)
+  private var videoLens: (camera: String, mirrored: Bool) {
+    get { videoLensLock.lock(); defer { videoLensLock.unlock() }; return _videoLens }
+    set { videoLensLock.lock(); _videoLens = newValue; videoLensLock.unlock() }
+  }
   /// Snapshot of clients for the hot data path (avoids locking the control queue).
   private var clientList: [Client] = []
 
@@ -370,9 +378,11 @@ public final class SessionManager {
     encoder.setBitrate(config.int("rgb", "bitrate_kbps") * 1000)
     encoder.setKeyframeInterval(max(1, config.int("rgb", "keyframe_interval")))
     encoder.requestKeyframe()
+    videoLens = ("back_wide", false)
     if isCameraMode {
       let lens = Lens(rawValue: config.string("rgb", "lens")) ?? .wide
       camera.start(lens: lens, formatId: config.string("rgb", "camera_format"), camera: config.cameraSettings())
+      videoLens = (Self.wireCamera(camera.lens), camera.mirrored)
     } else if config.isEnabled("ar_pose") || config.isEnabled("rgb"), ArSource.supported {
       ar.start(
         videoFormatId: config.string("ar_pose", "video_format"),
@@ -536,6 +546,7 @@ public final class SessionManager {
     d.intrinsics.fx = Double(k.columns.0.x) * sx; d.intrinsics.fy = Double(k.columns.1.y) * sy
     d.intrinsics.cx = Double(k.columns.2.x) * sx; d.intrinsics.cy = Double(k.columns.2.y) * sy
     d.rotationDeg = 90
+    d.camera = "back_wide"   // ARKit scene depth is registered to the AR (main) camera image
     var m = MnDataMessage()
     m.depth = d
     for c in clientList where c.subscribed.contains("depth") {
@@ -562,6 +573,9 @@ public final class SessionManager {
     v.intrinsics.fx = Double(k.columns.0.x); v.intrinsics.fy = Double(k.columns.1.y)
     v.intrinsics.cx = Double(k.columns.2.x); v.intrinsics.cy = Double(k.columns.2.y)
     v.rotationDeg = 90   // verified on iPhone 17 Pro: front and back buffers share the same sensor orientation
+    let lens = videoLens
+    v.camera = lens.camera
+    v.mirrored = lens.mirrored
     var d = MnDataMessage()
     d.video = v
     for c in clientList where c.subscribed.contains("rgb") {
@@ -680,7 +694,23 @@ public final class SessionManager {
     p.protocolVersion = d.protocolVersion
     p.appVersion = d.appVersion
     p.hasLidar_p = d.hasLidar
+    p.frameConvention = frameConvention
+    // Camera ARKit tracks with for the configured video format (ARVideoFormat.captureDeviceType).
+    let formats = ArSource.videoFormats()
+    if let f = formats.first(where: { $0.id == ar.videoFormatId }) ?? formats.first {
+      p.arCaptureDeviceType = f.format.captureDeviceType.rawValue
+    }
     return p
+  }
+
+  /// VideoFrame.camera value for a camera-mode lens.
+  private static func wireCamera(_ lens: Lens) -> String {
+    switch lens {
+    case .wide: return "back_wide"
+    case .ultraWide: return "back_ultra_wide"
+    case .telephoto: return "back_telephoto"
+    case .front: return "front"
+    }
   }
 }
 

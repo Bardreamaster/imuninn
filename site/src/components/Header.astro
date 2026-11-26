@@ -14,6 +14,9 @@ const lang = route?.lang ?? "zh-CN";
 const en = lang.startsWith("en");
 const hasSidebar = route?.hasSidebar ?? true;
 const docs = { label: en ? "Docs" : "文档", href: en ? "/en/start/overview/" : "/start/overview/" };
+// The iPhone parameter page is a full-screen tool: it opens in a new tab.
+const parameters = { label: en ? "iPhone parameters" : "iPhone 参数", href: en ? "/en/parameter-definition/" : "/parameter-definition/" };
+const newTab = en ? "opens in a new tab" : "在新标签页打开";
 const menuLabel = en ? "Menu" : "菜单";
 ---
 <div class="header">
@@ -23,6 +26,7 @@ const menuLabel = en ? "Menu" : "菜单";
     </div>
     <nav class="top-links sl-flex" aria-label={en ? "Sections" : "栏目"}>
       <a href={docs.href}>{docs.label}</a>
+      <a href={parameters.href} target="_blank" rel="noopener">{parameters.label}<Icon name="external" /><span class="sr-only">({newTab})</span></a>
     </nav>
   </div>
   <div class="search-slot"><Search /></div>
@@ -40,6 +44,7 @@ const menuLabel = en ? "Menu" : "菜单";
       <div id="home-menu" class="home-menu-panel" popover>
         <nav aria-label={en ? "Sections" : "栏目"}>
           <a href={docs.href}>{docs.label}</a>
+          <a href={parameters.href} target="_blank" rel="noopener">{parameters.label}<Icon name="external" /><span class="sr-only">({newTab})</span></a>
         </nav>
         <div class="home-menu-prefs">
           <div class="social-icons-mobile"><SocialIcons /></div>
@@ -94,7 +99,7 @@ const menuLabel = en ? "Menu" : "菜单";
     border-bottom: 1px solid var(--sl-color-hairline-shade);
     box-shadow: var(--sl-shadow-md);
   }
-  .home-menu-panel nav { display: flex; padding-bottom: 1rem; }
+  .home-menu-panel nav { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; padding-bottom: 1rem; }
   .home-menu-panel nav a { font-size: var(--sl-text-base); }
   .home-menu-prefs { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--sl-color-gray-6); }
   .social-icons-mobile { display: flex; gap: 1rem; align-items: center; margin-inline-end: auto; }

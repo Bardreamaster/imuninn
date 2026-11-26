@@ -8,9 +8,30 @@
 
 ## 版本
 
-- `VERSION` 文件保存整数协议版本号，每条消息头 `Header.protocol_version` 携带。
-- 规则：只增不改。删除字段只能 `reserved`，不得复用字段号。
-- 语义变化（即便字段号不变）也要 bump。
+版本分两层：
+
+| 层 | 在哪 | 什么时候变 |
+| --- | --- | --- |
+| 协议版本（整数，现在是 7，文档里写作 v7） | `VERSION` 文件；每条消息头的 `Header.protocol_version`，以及 `Hello`、`Welcome`、`DeviceInfo` | 兼容的改动，每次加 1 |
+| 包名（`imuninn.v1`） | `imuninn.proto` 的 `package` | 不兼容的改动，升到 `imuninn.v2` |
+
+规则：
+
+1. **只加可选字段、加消息、加枚举值，整数加 1。** 旧客户端会忽略不认识的字段，新客户端读旧数据时新字段是默认值（0、空串、`false`），所以新字段的默认值必须表示“没有报告”。
+2. **删字段、改字段号或类型、改已有字段的含义，升包名到 `v2`。** 在 `v1` 里这些都不做：不再用的字段标 `reserved`，字段号不复用；含义要变就加一个新字段，旧字段保持原样。
+3. **客户端按“版本号 ≥ N 才用某功能”判断，不要求两边相等。** 版本不同是正常情况（App 和 PC 端各自升级）。Python 包和 Web 查看器在版本不同时只打一行 `protocol mismatch` 日志，照常工作。
+
+协议版本和 App、Python 包的版本号（如 0.2.0）互相独立。坐标系约定另有自己的整数 `frame_convention`（见[坐标系](#坐标系)），改坐标系定义不一定要改协议。
+
+各版本加了什么（N 的取值）：
+
+| 版本 | 新增 |
+| --- | --- |
+| v3 | `health` 流（`DeviceHealth`） |
+| v4 | `DeviceConfig.session_params` |
+| v5 | `Hello.data_transport`，数据流走 WebSocket（浏览器） |
+| v6 | `audio` 流（`AudioChunk`） |
+| v7 | 坐标系元数据：`DeviceInfo.frame_convention` / `ar_capture_device_type`，`VideoFrame` / `DepthFrame` 的 `camera` / `mirrored` |
 
 ## 通道
 
@@ -36,9 +57,13 @@ TCP 流上的帧格式：`uint32 little-endian length` + `DataMessage` bytes。U
 
 ## 坐标系
 
-位姿保持 ARKit / ARCore 原生约定：右手系、Y 向上、相机朝 -Z。转到 OpenCV 相机坐标系（X 右、Y 下、Z 前）只需把相机系的 Y、Z 轴取反；SDK 不内置转换。
+线上数据一律是平台原生坐标系，手机端不做换算：
 
-图像按传感器原始方向发送，`rotation_deg` 说明显示时要顺时针转多少度。内参跟图像同方向。
+- 位姿是 ARKit 的 `ARCamera.transform`：右手系、世界 Y 向上、相机朝 -Z。
+- IMU 在 Core Motion 设备系（竖屏 x 右、y 上、z 屏外），加速度保留平台符号（iOS 平放 z ≈ −9.81，Android ≈ +9.81）。
+- 图像按传感器原始方向发送，`rotation_deg` 说明显示时要顺时针转多少度，内参跟图像同方向；v7 起每帧还带镜头（`camera`）和是否镜像（`mirrored`）。
+
+客户端用 `protocol/frames/` 里的共享常数在入口换算到统一坐标系（`world` z 朝上、`device`、`cam_*_optical` 为 OpenCV 轴向、IMU 按 REP 145）。v7 起手机在 `DeviceInfo.frame_convention` 报告约定版本（当前 1），并在 `ar_capture_device_type` 报告 AR 追踪用的镜头。Python 包默认输出统一坐标系，见 [Python · 坐标系](../docs/python/11-frames.md)。
 
 ## 代码生成
 

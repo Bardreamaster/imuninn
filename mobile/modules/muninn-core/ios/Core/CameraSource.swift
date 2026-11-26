@@ -34,6 +34,8 @@ public final class CameraSource: NSObject, AVCaptureVideoDataOutputSampleBufferD
   private var device: AVCaptureDevice?
   public private(set) var running = false
   public private(set) var lens: Lens = .wide
+  /// Whether the video data output mirrors its buffers (read back after configuring; front camera).
+  public private(set) var mirrored = false
   public private(set) var formatId = ""
   public var onFrame: ((CameraFrame) -> Void)?
   public private(set) var frameCount: UInt64 = 0
@@ -90,6 +92,7 @@ public final class CameraSource: NSObject, AVCaptureVideoDataOutputSampleBufferD
       conn.isCameraIntrinsicMatrixDeliveryEnabled = true
     }
     session.commitConfiguration()
+    mirrored = output.connection(with: .video)?.isVideoMirrored ?? false   // reported per frame (VideoFrame.mirrored)
 
     do {
       try dev.lockForConfiguration()

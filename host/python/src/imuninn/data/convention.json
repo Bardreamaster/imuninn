@@ -1,0 +1,100 @@
+{
+  "frame_convention": 1,
+  "title": "iMuninn unified coordinate frames",
+  "doc": "docs/dev/11-frame-convention.md",
+  "notes": [
+    "The wire protocol stays in Apple / Android native frames. Clients convert once, at their entry point, with the constants below.",
+    "Every entry carries verified: false until it has been checked on a real phone (docs/dev/11-frame-convention.md section 5).",
+    "Matrices: columns are the child frame's axes expressed in the parent frame, so a_rot_b @ p_b = p_a.",
+    "Lengths in metres in this file. iphone-frames.json keeps millimetres to match the drawings."
+  ],
+  "units": {"length": "m", "angle": "rad", "time": "s", "accel": "m/s^2", "gyro": "rad/s"},
+  "quaternion_order": "xyzw",
+  "naming": {
+    "a_tf_b": "4x4 homogeneous pose of frame b in frame a: p_a = a_tf_b @ p_b",
+    "a_rot_b": "3x3 rotation part of a_tf_b",
+    "a_pos_b": "origin of b expressed in a (translation part of a_tf_b)",
+    "a_quat_b": "a_rot_b as a quaternion, (x, y, z, w)"
+  },
+  "frames": {
+    "world": {"parent": null, "definition": "Origin where the AR session started. z up (against gravity), x = the camera's horizontal viewing direction at session start, y = left (FLU, REP 103). Converted from the ARKit world frame."},
+    "device": {"parent": "world", "definition": "Centre of the display active area, on the outer surface of the front cover glass. Core Motion axes: x right edge, y top edge, z out of the screen (portrait). Same as the iphone-frames dataset's body frame."},
+    "imu": {"parent": "device", "definition": "Same axes as device; origin assumed at the device origin (Apple does not publish the IMU location). See imu.lever_arm."},
+    "magsafe": {"parent": "device", "definition": "Centre of the MagSafe keep-out circle on the back plate; z out of the back, y = device y."},
+    "cam_main_optical": {"parent": "device", "definition": "Main (wide) camera. OpenCV optical axes of the unrotated native image: x right, y down, z viewing direction. Origin on the lens window, outer surface of the camera cover glass."},
+    "cam_ultra_wide_optical": {"parent": "device", "definition": "Ultra-wide camera, same convention as cam_main_optical."},
+    "cam_telephoto_optical": {"parent": "device", "definition": "Telephoto camera, same convention as cam_main_optical."},
+    "cam_front_optical": {"parent": "device", "definition": "Front camera. OpenCV optical axes of the unmirrored native image; z out of the screen. x / y depend on the sensor rotation (rotation_deg)."},
+    "arcam": {"parent": "device", "definition": "ARKit camera frame (ARCamera.transform's local frame): x along the long edge toward the bottom, y up in landscape-right, z toward the screen side; the camera looks along -z. Only used to convert ARKit poses."},
+    "ar_world": {"parent": null, "definition": "ARKit world frame with worldAlignment .gravity: y up, -z = camera heading at session start."}
+  },
+  "rotations": {
+    "world_rot_ar": {
+      "matrix": [[0, 0, -1], [-1, 0, 0], [0, 1, 0]],
+      "basis": "derived: x_w = -z_ar, y_w = -x_ar, z_w = y_ar (ARKit .gravity world, official docs)",
+      "verified": false
+    },
+    "device_rot_arcam": {
+      "matrix": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+      "basis": "derived from the ARKit camera axes (official docs) and the Core Motion device axes",
+      "verified": false
+    },
+    "arcam_rot_optical": {
+      "matrix": [[1, 0, 0], [0, -1, 0], [0, 0, -1]],
+      "basis": "Apple sample code: intrinsics frame = ARKit camera frame with y and z flipped",
+      "verified": false
+    },
+    "device_rot_rear_optical": {
+      "matrix": [[0, -1, 0], [-1, 0, 0], [0, 0, -1]],
+      "basis": "device_rot_arcam @ arcam_rot_optical; matches rotation_deg 90 (measured on iPhone 17 Pro)",
+      "verified": false
+    },
+    "device_rot_front_optical": {
+      "matrix": [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+      "basis": "derived for rotation_deg 90 (iPhone 17 Pro, measured rotation) and an unmirrored buffer; other models use the rule in camera_optical",
+      "verified": false
+    }
+  },
+  "camera_optical": {
+    "rule": "native image = upright portrait image rotated counter-clockwise by rotation_deg. With (xu, yu, z) the upright axes below: 0 -> (xu, yu), 90 -> (yu, -xu), 180 -> (-xu, -yu), 270 -> (-yu, xu). A mirrored buffer is flipped back (u -> W - 1 - u, cx -> W - cx) before this applies.",
+    "upright": {
+      "back": {"x": [1, 0, 0], "y": [0, -1, 0], "z": [0, 0, -1]},
+      "front": {"x": [-1, 0, 0], "y": [0, -1, 0], "z": [0, 0, 1]}
+    },
+    "default_rotation_deg": {
+      "back": 90,
+      "front": 90,
+      "front_before_iphone17": 270
+    },
+    "verified": false
+  },
+  "ar_tracking_camera": {
+    "default": "main",
+    "capture_device_types": {
+      "AVCaptureDeviceTypeBuiltInWideAngleCamera": "main",
+      "AVCaptureDeviceTypeBuiltInUltraWideCamera": "ultra_wide",
+      "AVCaptureDeviceTypeBuiltInTelephotoCamera": "telephoto",
+      "AVCaptureDeviceTypeBuiltInTrueDepthCamera": "front"
+    },
+    "basis": "ARKit world tracking uses the main (wide) camera; DeviceInfo.ar_capture_device_type overrides it when present",
+    "verified": false
+  },
+  "imu": {
+    "accel": {
+      "ios": {"scale": -1.0, "input": "ImuSample.accel: m/s^2 with the Core Motion sign (gravity vector; flat face up z = -9.81)", "verified": false},
+      "android": {"scale": 1.0, "input": "ImuSample.accel: m/s^2 SensorManager sign (specific force; flat face up z = +9.81)", "verified": false},
+      "output": "specific force in m/s^2, REP 145: flat face up z = +9.81"
+    },
+    "gyro": {
+      "ios": {"scale": 1.0, "verified": false},
+      "android": {"scale": 1.0, "verified": false},
+      "output": "rad/s about the device axes, right-handed"
+    },
+    "g": 9.80665,
+    "lever_arm": {"value": [0.0, 0.0, 0.0], "uncertainty_m": 0.05, "basis": "IMU position not published by Apple; device origin assumed", "verified": false}
+  },
+  "timestamps": {
+    "clock": "device monotonic clock (mach_absolute_time / CLOCK_BOOTTIME), shared by every stream",
+    "verified": false
+  }
+}

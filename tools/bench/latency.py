@@ -43,7 +43,7 @@ def main() -> None:
     ap.add_argument("--json", default=None, help="write results here")
     args = ap.parse_args()
 
-    with imuninn.connect(args.target) as dev:
+    with imuninn.connect(args.target, frames="raw") as dev:   # measure the messages as sent
         print(f"connected: {dev!r}  offset {dev.clock_offset_ns / 1e6:.3f} ms")
 
         # control RTT distribution

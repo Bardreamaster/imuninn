@@ -1,13 +1,13 @@
 [project]
 name = "imuninn"
-version = "0.2.0"
+version = "0.3.0"
 description = "PC-side client for iMuninn: turn an iPhone into a network sensor node (camera, IMU, ARKit pose, LiDAR depth)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT OR Apache-2.0"
 license-files = ["LICENSE-MIT", "LICENSE-APACHE"]
 authors = [{ name = "Jinqi Wei" }]
-keywords = ["iphone", "sensor", "arkit", "lidar", "imu", "camera", "robotics", "protobuf", "mcap", "rerun"]
+keywords = ["iphone", "sensor", "arkit", "lidar", "imu", "camera", "robotics", "protobuf", "mcap", "rerun", "urdf", "mjcf"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -36,7 +36,8 @@ video = ["av>=12"]
 mcap = ["mcap>=1.2", "mcap-protobuf-support>=0.5"]
 rerun = ["rerun-sdk>=0.20", "av>=12"]
 mcp = ["mcp>=2", "pillow"]
-all = ["av>=12", "mcap>=1.2", "mcap-protobuf-support>=0.5", "rerun-sdk>=0.20", "mcp>=2", "pillow"]
+models = ["trimesh>=4"]   # glTF (.glb) export in imuninn.models; URDF / MJCF need nothing
+all = ["av>=12", "mcap>=1.2", "mcap-protobuf-support>=0.5", "rerun-sdk>=0.20", "mcp>=2", "pillow", "trimesh>=4"]
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 docs = ["griffe==2.4.1"]  # tools/gen-docs.py only (needs Python 3.11+); pinned because docs/python/08-api.md is diffed in CI
 

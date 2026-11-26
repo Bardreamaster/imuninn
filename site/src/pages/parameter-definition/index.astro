@@ -1,0 +1,13 @@
+---
+// iPhone parameter page, Chinese (root locale). English: ../en/parameter-definition/index.astro.
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import ParameterDefinition from "../../components/ParameterDefinition.astro";
+---
+<StarlightPage frontmatter={{
+  title: "iPhone 参数定义",
+  description: "30 款 iPhone 的机身尺寸和坐标系：机身、MagSafe、各镜头光学系的位置与朝向，取自 Apple 外观尺寸图，可在 3D 中查看。",
+  template: "splash",
+  tableOfContents: false,
+}}>
+  <ParameterDefinition lang="zh" />
+</StarlightPage>

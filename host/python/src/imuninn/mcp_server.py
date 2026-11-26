@@ -95,7 +95,7 @@ def connect(target: str = "") -> dict:
             except Exception:
                 pass
         _dev = _connect(target, name="mcp-agent")
-        _dev.on("*", _on_sample)
+        _dev.on("*", _on_sample, frames="raw")   # tools convert on demand (dev.frames)
     d = _dev.info
     caps = _dev.capabilities
     return {
@@ -188,30 +188,40 @@ def apply_profile(name_or_path: str) -> dict:
 
 @server.tool()
 def pose() -> dict:
-    """Latest ARKit pose (position m, orientation quaternion xyzw, tracking state, intrinsics)."""
-    _need()
+    """Latest AR pose in the unified frames: world_tf_device (4x4, metres; world z up, x = heading at
+    session start, y left), device position and quaternion xyzw, tracking state, intrinsics, and the
+    raw ARKit transform (y-up AR world) as sent."""
+    dev = _need()
     p = _latest.get("ar_pose")
     if p is None:
         return {"error": "no pose received yet (is the session started and ar_pose enabled?)"}
+    u = dev.frames.pose(p)
     return {
         "device_time_s": p.header.device_time_ns / 1e9,
-        "position": [p.position.x, p.position.y, p.position.z],
-        "orientation_xyzw": [p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w],
+        "frames": "world: z up (FLU); device: x right, y top, z out of the screen",
+        "world_pos_device": u.world_pos_device.round(5).tolist(),
+        "world_quat_device_xyzw": u.world_quat_device.round(6).tolist(),
+        "world_tf_device": u.world_tf_device.round(6).tolist(),
         "tracking": pb.TrackingState.Name(p.tracking).removeprefix("TRACKING_STATE_").lower(),
         "intrinsics": {"fx": p.intrinsics.fx, "fy": p.intrinsics.fy, "cx": p.intrinsics.cx, "cy": p.intrinsics.cy,
                        "width": p.intrinsics.width, "height": p.intrinsics.height},
+        "raw_position": [p.position.x, p.position.y, p.position.z],
+        "raw_orientation_xyzw": [p.orientation.x, p.orientation.y, p.orientation.z, p.orientation.w],
     }
 
 
 @server.tool()
 def imu() -> dict:
-    """Latest IMU sample (accel m/s², gyro rad/s)."""
-    _need()
+    """Latest IMU sample in the imu frame (device axes): accel m/s² with the REP 145 sign (flat, screen up:
+    z = +9.81), gyro rad/s; raw_accel is the value as sent."""
+    dev = _need()
     s = _latest.get("imu")
     if s is None:
         return {"error": "no IMU sample received yet"}
+    u = dev.frames.imu(s)
     return {"device_time_s": s.header.device_time_ns / 1e9,
-            "accel": [s.accel.x, s.accel.y, s.accel.z], "gyro": [s.gyro.x, s.gyro.y, s.gyro.z]}
+            "accel": u.accel.round(5).tolist(), "gyro": u.gyro.round(6).tolist(),
+            "raw_accel": [s.accel.x, s.accel.y, s.accel.z]}
 
 
 @server.tool()
@@ -274,7 +284,7 @@ def record(path: str, seconds: float = 5.0, streams: str = "") -> dict:
     with McapRecorder(path, dev.info, dev.capabilities, dev.clock_offset_ns) as rec:
         rec.write_config(dev.config)
         t_end = time.time() + seconds
-        for _stream, sample in dev.iter(None, timeout=5):
+        for _stream, sample in dev.iter(None, timeout=5, frames="raw"):
             rec.write(pb.DataMessage(**{field[type(sample)]: sample}))
             if time.time() > t_end:
                 break

@@ -209,6 +209,34 @@ def test_sink_entities_and_timelines(tmp_path):
     assert sink._tracking == pb.TRACKING_STATE_NORMAL and sink._thermal == pb.DeviceHealth.THERMAL_NOMINAL
     rec.disconnect()
     paths = rrd.read_bytes()
-    for ent in (b"world/dev_a/trajectory", b"world/dev_a/depth/image", b"world/dev_a/points",
+    for ent in (b"world/dev_a/trajectory", b"world/dev_a/depth/image", b"world/dev_a/depth_points",
                 b"plots/dev_a/imu/accel", b"events/dev_a"):
         assert ent in paths, ent
+
+
+@pytest.mark.parametrize("frames", ["unified", "raw"])
+def test_sink_frames_modes(tmp_path, frames):
+    """unified: device pose + optical camera transforms, points beside the depth pinhole;
+    raw: the pre-0.3 layout (points directly under world/<dev>)."""
+    import rerun as rr
+
+    from imuninn.frames import FrameConverter
+    from imuninn.mcap_io import replay_timed
+    from imuninn.rerun_bridge import RerunSink
+
+    mcap = tmp_path / "syn.mcap"
+    make_synthetic_mcap(mcap, seconds=0.5, with_video=False)
+    rec = rr.RecordingStream("imuninn-test")
+    rrd = tmp_path / f"{frames}.rrd"
+    rec.save(str(rrd))
+    sink = RerunSink(rr, "dev", video="off", points=True, point_stride=4, recording=rec, frames=frames,
+                     converter=FrameConverter(model="iPhone18,1") if frames == "unified" else None)
+    for stream, sample, log_time in replay_timed(mcap):
+        sink.log(stream, sample, log_time_ns=log_time)
+    sink.flush()
+    rec.disconnect()
+    data = rrd.read_bytes()
+    if frames == "unified":
+        assert b"world/dev/depth_points" in data and sink._cam_tf is not None and sink._depth_tf is not None
+    else:
+        assert b"world/dev/points" in data and sink._cam_tf is None

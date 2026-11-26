@@ -3,7 +3,7 @@
 import protobuf from "protobufjs";
 import protoText from "../../../protocol/imuninn.proto?raw";
 
-const root = protobuf.parse(protoText, { keepCase: true }).root;
+export const root = protobuf.parse(protoText, { keepCase: true }).root;
 const ns = "imuninn.v1.";
 
 export const T = {
@@ -17,6 +17,9 @@ export const T = {
   Gap: root.lookupType(ns + "Gap"),
   AudioChunk: root.lookupType(ns + "AudioChunk"),
   ConfigChanged: root.lookupType(ns + "ConfigChanged"),
+  DeviceInfo: root.lookupType(ns + "DeviceInfo"),
+  Capabilities: root.lookupType(ns + "Capabilities"),
+  DeviceConfig: root.lookupType(ns + "DeviceConfig"),
 };
 
 const toObjectOpts = { longs: Number, enums: Number, defaults: true } as const;

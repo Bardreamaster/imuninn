@@ -17,6 +17,12 @@ protoc -I "$PROTO_DIR" --python_out="$PY_OUT" --pyi_out="$PY_OUT" "$PROTO"
 cp "$PROTO" "$PY_OUT/imuninn.proto"   # shipped inside the package for reference
 echo "python  -> $PY_OUT"
 
+# Frame-convention constants and the per-model frame table (protocol/frames/), shipped as package data
+PY_DATA="$ROOT/host/python/src/imuninn/data"
+mkdir -p "$PY_DATA"
+cp "$PROTO_DIR/frames/convention.json" "$PROTO_DIR/frames/iphone-frames.json" "$PY_DATA/"
+echo "frames  -> $PY_DATA"
+
 # C++
 CPP_OUT="$ROOT/host/cpp/gen"
 mkdir -p "$CPP_OUT"
